@@ -9,7 +9,11 @@
     "type": "git",
     "url": "git@github.com:rolyatmax/rota.git"
   },
-  "keywords": ["routing", "reinforcement", "learning"],
+  "keywords": [
+    "routing",
+    "reinforcement",
+    "learning"
+  ],
   "author": "Taylor Baldwin",
   "license": "ISC",
   "bugs": {
@@ -17,9 +21,16 @@
   },
   "homepage": "https://github.com/rolyatmax/rota",
   "devDependencies": {
-    "browserify": "4.1.9"
+    "6to5ify": "4.0.0",
+    "browserify": "4.1.9",
+    "watchify": "2.2.1"
   },
   "dependencies": {
     "underscore": "1.7.0"
+  },
+  "browserify": {
+    "transform": [
+      "6to5ify"
+    ]
   }
 }
