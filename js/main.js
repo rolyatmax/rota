@@ -5,7 +5,9 @@ var Network = require('./network');
 var Packets = require('./packets');
 var Stats = require('./stats');
 
-var network = new Network(32);
+const NODE_COUNT = 28;
+
+var network = new Network(NODE_COUNT);
 network.connectAll();
 
 var smart1 = new Packets(network, {
@@ -48,6 +50,17 @@ window.network = network;
 window._ = _;
 window.smart1 = smart1;
 window.smart2 = smart2;
+
+var playing = false;
+
+document.addEventListener('keydown', (e) => {
+    if (e.which === 32) { // spacebar
+        var method = playing ? 'stop' : 'start';
+        _.invoke([smart1, smart2], method);
+        playing = !playing;
+        e.preventDefault();
+    }
+});
 
 _.each({
     '.add-packets-1': smart1,

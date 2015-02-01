@@ -1,6 +1,6 @@
 var _ = require('underscore');
 
-const REDZONE_TIME = 12000;
+const REDZONE_TIME = 5000;
 const GREEN = [39, 179, 171];
 const RED = [167, 29, 36];
 const OPACITY = 0.7;
