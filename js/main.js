@@ -5,7 +5,7 @@ var Network = require('./network');
 var Packets = require('./packets');
 var Stats = require('./stats');
 
-const NODE_COUNT = 28;
+const NODE_COUNT = 36;
 
 var network = new Network(NODE_COUNT);
 network.connectAll();
