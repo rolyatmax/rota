@@ -41,11 +41,26 @@ h4 {
     position: relative;
 }
 
-.stats {
+.stats, .controls {
     width: 300px;
     position: absolute;
     top: 0;
     right: 0;
+}
+
+.controls {
+    top: -34px;
+    right: 0;
+}
+
+button {
+    padding: 10px;
+    margin: 5px 0;
+}
+
+.controls button {
+    float: left;
+    margin-right: 5px;
 }
 
 td {

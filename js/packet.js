@@ -6,7 +6,6 @@ const GREEN = [39, 179, 171];
 const RED = [167, 29, 36];
 const OPACITY = 0.7;
 const RADIUS = 6;
-const COMPLETION_REWARD = 2000;
 const LATENCY_RANGE = settings.LATENCY_RANGE;
 const SCORE_RANGE = [20, 180];
 
@@ -40,7 +39,8 @@ class Packet {
         this.curNode = this.curEdge.getOtherNode(this.curNode);
         if (this.curNode === this.endNode) {
             if (this.smart) {
-                this.evaluationCb(COMPLETION_REWARD, this.curNode.getMaxActionValue(this.smartOpts, this.endNode));
+                let completionReward = this.smartOpts['completionReward'];
+                this.evaluationCb(completionReward, this.curNode.getMaxActionValue(this.smartOpts, this.endNode));
             }
             this.totalTime = now - this.startTime;
             return;

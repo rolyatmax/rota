@@ -33,6 +33,8 @@ class Stats {
             'rate': this.packets.rate
         };
 
+        ctx = _.extend(ctx, this.comparePaths());
+
         this.el.innerHTML = template(ctx);
     }
     resetStats() {
@@ -41,6 +43,7 @@ class Stats {
         this.finished = new Set();
         this.aggregateTimes = 0;
         this.pathStats = {};
+        this.render();
     }
     logFinish(packet) {
         this.completedCount += 1;
@@ -60,6 +63,59 @@ class Stats {
         if (!pathStat['worstTime'] || packet.totalTime > pathStat['worstTime']) {
             pathStat['worstTime'] = packet.totalTime;
         }
+    }
+    comparePaths() {
+        // average count of each path run
+        var pathCount = _.size(this.pathStats);
+        var totalCount = _.reduce(this.pathStats, (memo, pathStat) => {
+            return memo + pathStat['totalCount'];
+        }, 0);
+        var averagePathCount = Math.round(totalCount / pathCount);
+
+        // average best
+        var totalBest = _.reduce(this.pathStats, (memo, pathStat) => {
+            return memo + pathStat['bestTime'];
+        }, 0);
+        var averageBest = Math.round(totalBest / pathCount);
+
+        // average worst
+        var totalWorst = _.reduce(this.pathStats, (memo, pathStat) => {
+            return memo + pathStat['worstTime'];
+        }, 0);
+        var averageWorst = Math.round(totalWorst / pathCount);
+
+        // average difference between best and actual
+        var totalBestActualDiff = _.reduce(this.pathStats, (memo, pathStat) => {
+            return memo + pathStat['averageTime'] - pathStat['bestTime'];
+        }, 0);
+        var averageBestActualDifference = Math.round(totalBestActualDiff / pathCount);
+
+        // average difference between best and worst
+        var totalBestWorstDiff = _.reduce(this.pathStats, (memo, pathStat) => {
+            return memo + pathStat['worstTime'] - pathStat['bestTime'];
+        }, 0);
+        var averageBestWorstDifference = Math.round(totalBestWorstDiff / pathCount);
+
+        // average difference between best and average
+        var totalBestActualDiffRatio = _.reduce(this.pathStats, (memo, pathStat) => {
+            return memo + pathStat['averageTime'] / pathStat['bestTime'];
+        }, 0);
+        var averageBestActualRatio = (((totalBestActualDiffRatio / pathCount) * 100) | 0) / 100;
+
+        var data = {
+            pathCount,
+            averagePathCount,
+            averageBest,
+            averageWorst,
+            averageBestActualDifference,
+            averageBestActualRatio,
+            averageBestWorstDifference
+        };
+
+        // console.log('Stats!');
+        // console.log(_.map(data, (val, key) => `${key}: ${val}`).join('\n'));
+
+        return data;
     }
 }
 

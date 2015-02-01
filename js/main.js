@@ -11,20 +11,24 @@ var network = new Network(NODE_COUNT);
 network.connectAll();
 
 var smart1 = new Packets(network, {
-    'explore': 0.05,
+    'explore': 0.15,
     'alpha': 0.9,
     'discount': 0.8,
-    'initial': 200
+    'initial': 200,
+    'completionReward': 200
 });
-smart1.setStats(new Stats('.smart-stats-1', smart1));
+var stats1 = new Stats('.smart-stats-1', smart1);
+smart1.setStats(stats1);
 
 var smart2 = new Packets(network, {
     'explore': 0.05,
     'alpha': 0.9,
     'discount': 0.8,
-    'initial': 200
+    'initial': 200,
+    'completionReward': 2000
 });
-smart2.setStats(new Stats('.smart-stats-2', smart2));
+var stats2 = new Stats('.smart-stats-2', smart2);
+smart2.setStats(stats2);
 
 var sketch = Sketch.create({
     'fullscreen': false,
@@ -76,3 +80,6 @@ _.each({
       .addEventListener('click', collection.addPackets.bind(collection, 1000));
 });
 
+document.querySelector('.reset-stats').addEventListener('click', () => {
+    _.invoke([stats1, stats2], 'resetStats');
+});
