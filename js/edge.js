@@ -5,10 +5,11 @@ const COLOR = 'rgba(0, 0, 0, 0.4)';
 const LATENCY_RANGE = settings.LATENCY_RANGE;
 
 class Edge {
-    constructor(node1, node2) {
-        this.id = generateID(node1, node2);
+    constructor(node1, node2, id) {
+        this.id = id;
         this.nodes = [node1, node2];
         this.latency = _.random(...LATENCY_RANGE);
+        this.active = true;
     }
     getOtherNode(node) {
         var i = this.nodes.indexOf(node);
@@ -20,6 +21,9 @@ class Edge {
         return i === 0 ? this.nodes[1] : this.nodes[0];
     }
     draw(ctx) {
+        if (!this.active) {
+            return;
+        }
         var [node1, node2] = this.nodes;
         var [x1, y1] = node1.loc;
         var [x2, y2] = node2.loc;
@@ -29,19 +33,21 @@ class Edge {
         ctx.strokeStyle = getColor(this.latency);
         ctx.stroke();
     }
+    toggleActive(active) {
+        if (active === undefined) {
+            active = !this.active;
+        }
+
+        var method = active ? 'addEdge': 'removeEdge';
+        _.invoke(this.nodes, method, this);
+        this.active = active;
+    }
 }
 
 function getColor(latency) {
     var [minA, maxA] = LATENCY_RANGE;
     var opacity = (((map(-latency, -maxA, -minA, 0.2, 0.9)) * 1000) | 0) / 1000;
     return 'rgba(0, 0, 0, ' + opacity + ')';
-}
-
-// deterministic way to generate ids based on a 2-node combo
-function generateID(node1, node2) {
-    var id1 = node1.id;
-    var id2 = node2.id;
-    return id1 < id2 ? id1 + '-' + id2 : id2 + '-' + id1;
 }
 
 module.exports = Edge;

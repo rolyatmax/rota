@@ -42,6 +42,12 @@ var sketch = Sketch.create({
         network.draw(this);
         smart1.draw(this);
         smart2.draw(this);
+    },
+
+    touchstart() {
+        var {x, y} = this.touches[0];
+        var edge = network.findClosestEdge(x, y);
+        edge.toggleActive();
     }
 });
 

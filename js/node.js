@@ -1,4 +1,6 @@
-const SPACING = 60;
+var settings = require('./settings');
+
+const SPACING = settings.SPACING;
 const RADIUS = 4;
 const COLOR = 'rgba(0, 0, 0, 0.5)';
 
@@ -33,18 +35,24 @@ class Node {
         }
         var policyVersion = smartOpts['version'];
         _ensureDefaults(this.policy, policyVersion, endNode, this.edges, smartOpts['initial']);
-        var actions = this.policy[policyVersion][endNode.id];
+        var validActions = this.getValidActions(policyVersion, endNode);
         if (Math.random() > smartOpts['explore']) {
             let maxValue = this.getMaxActionValue(smartOpts, endNode);
-            actions = _.where(actions, {'value': maxValue});
+            validActions = _.where(validActions, {'value': maxValue});
         }
-        return _.sample(actions)['edge'];
+        return _.sample(validActions)['edge'];
     }
     getMaxActionValue(smartOpts, endNode) {
         var policyVersion = smartOpts['version'];
         _ensureDefaults(this.policy, policyVersion, endNode, this.edges, smartOpts['initial']);
-        var maxAction = _.max(this.policy[policyVersion][endNode.id], (action) => { return action['value']; });
+        var validActions = this.getValidActions(policyVersion, endNode);
+        var maxAction = _.max(validActions, (action) => { return action['value']; });
         return maxAction['value'];
+    }
+    getValidActions(policyVersion, endNode) {
+        return _.filter(this.policy[policyVersion][endNode.id], (action) => {
+            return _.contains(this.edges, action['edge']);
+        });
     }
     getEvaluationCb(smartOpts, endNode, edge) {
         var policyVersion = smartOpts['version'];
