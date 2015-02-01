@@ -15,7 +15,7 @@ var smart1 = new Packets(network, {
     'alpha': 0.9,
     'discount': 0.8,
     'initial': 200,
-    'completionReward': 200
+    'completionReward': 500
 });
 var stats1 = new Stats('.smart-stats-1', smart1);
 smart1.setStats(stats1);
