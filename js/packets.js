@@ -5,12 +5,8 @@ const RATE = 2;
 
 class Packets {
     constructor(network, smartOpts={}) {
-        this.totalCount = 0;
-        this.completedCount = 0;
-        this.aggregateTimes = 0;
         this.network = network;
         this.inFlight = [];
-        this.finished = new Set();
         this.rate = RATE;
         this.timeout = null;
         this.smart = !!_.size(smartOpts);
@@ -19,6 +15,9 @@ class Packets {
                 'version': _.uniqueId('policy')
             });
         }
+    }
+    setStats(stats) {
+        this.stats = stats;
     }
     start() {
         this.pollAddPackets();
@@ -35,11 +34,7 @@ class Packets {
         var completed = _.filter(this.inFlight, (packet) => {
             return !!packet.totalTime;
         });
-        this.completedCount += completed.length;
-        _.each(completed, (packet) => {
-            this.aggregateTimes += packet.totalTime;
-            this.finished.add(packet);
-        });
+        _.each(completed, this.stats.logFinish.bind(this.stats));
         this.inFlight = _.difference(this.inFlight, completed);
     }
     draw(ctx) {
@@ -55,7 +50,7 @@ class Packets {
         }
 
         while (count--) {
-            this.totalCount += 1;
+            this.stats.totalCount += 1;
             var _startNode = startNode || _.sample(_.values(this.network.nodes));
             var _endNode = endNode || _.sample(_.values(this.network.nodes));
             this.inFlight.push(new Packet(_startNode, _endNode, this.smartOpts));

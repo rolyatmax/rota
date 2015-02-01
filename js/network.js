@@ -5,6 +5,8 @@ var settings = require('./settings');
 
 const SPACING = settings.SPACING;
 
+var generatePathID = settings.generatePathID;
+
 class Network {
     constructor(n) {
         this.width = this.height = Math.ceil(Math.sqrt(n));
@@ -34,7 +36,7 @@ class Network {
         return this.nodes[key(x, y)]
     }
     getEdge(node1, node2) {
-        var edge = this.edges[generateEdgeID(node1, node2)];
+        var edge = this.edges[generatePathID(node1, node2)];
         if (!edge) {
             throw new Error('Edge not found!');
         }
@@ -86,7 +88,7 @@ class Network {
                 if (!neighbor || edges.indexOf(neighbor) >= 0) {
                     return;
                 }
-                var id = generateEdgeID(node, neighbor);
+                var id = generatePathID(node, neighbor);
                 var edge = new Edge(node, neighbor, id);
                 node.addEdge(edge);
                 neighbor.addEdge(edge);
@@ -102,13 +104,6 @@ class Network {
 
 function key(x, y) {
     return x + '|' + y;
-}
-
-// deterministic way to generate ids based on a 2-node combo
-function generateEdgeID(node1, node2) {
-    var id1 = node1.id;
-    var id2 = node2.id;
-    return id1 < id2 ? id1 + '-' + id2 : id2 + '-' + id1;
 }
 
 module.exports = Network;

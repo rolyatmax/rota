@@ -16,7 +16,7 @@ var smart1 = new Packets(network, {
     'discount': 0.8,
     'initial': 200
 });
-var stats = new Stats('.smart-stats-1', smart1);
+smart1.setStats(new Stats('.smart-stats-1', smart1));
 
 var smart2 = new Packets(network, {
     'explore': 0.05,
@@ -24,7 +24,7 @@ var smart2 = new Packets(network, {
     'discount': 0.8,
     'initial': 200
 });
-var stats = new Stats('.smart-stats-2', smart2);
+smart2.setStats(new Stats('.smart-stats-2', smart2));
 
 var sketch = Sketch.create({
     'fullscreen': false,
