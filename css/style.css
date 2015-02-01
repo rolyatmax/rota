@@ -3,7 +3,7 @@ body {
     color: #333;
 }
 
-#container {
+.container {
     width: 100%;
     max-width: 800px;
     margin: auto;
@@ -20,11 +20,34 @@ h1 {
     border-bottom: 1px solid #333;
 }
 
+h2 {
+    font-size: 26px;
+    font-weight: 600;
+}
+
 h3 {
     font-size: 22px;
     font-weight: 300;
 }
 
-#canvas-container {
+h4 {
+    margin: 10px 0;
+    border-bottom: 1px solid #333;
+    border-top: 1px solid #333;
+    padding: 10px 0;
+}
 
+.content {
+    position: relative;
+}
+
+.stats {
+    width: 300px;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+td {
+    padding: 5px;
 }

@@ -23,6 +23,7 @@
   "devDependencies": {
     "6to5ify": "4.0.0",
     "browserify": "4.1.9",
+    "hbsify": "1.0.1",
     "watchify": "2.2.1"
   },
   "dependencies": {
@@ -30,6 +31,7 @@
   },
   "browserify": {
     "transform": [
+      "hbsify",
       "6to5ify"
     ]
   }
