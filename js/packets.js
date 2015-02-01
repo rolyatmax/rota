@@ -4,7 +4,7 @@ var Packet = require('./packet');
 const RATE = 2;
 
 class Packets {
-    constructor(network, opts={}) {
+    constructor(network, smartOpts={}) {
         this.totalCount = 0;
         this.completedCount = 0;
         this.aggregateTimes = 0;
@@ -13,8 +13,12 @@ class Packets {
         this.finished = new Set();
         this.rate = RATE;
         this.timeout = null;
-        this.smart = opts['smart'];
-        this.policyVersion = this.smart ? _.uniqueId('policy') : null;
+        this.smart = !!_.size(smartOpts);
+        if (this.smart) {
+            this.smartOpts = _.extend(smartOpts, {
+                'version': _.uniqueId('policy')
+            });
+        }
     }
     start() {
         this.pollAddPackets();
@@ -54,7 +58,7 @@ class Packets {
             this.totalCount += 1;
             var _startNode = startNode || _.sample(_.values(this.network.nodes));
             var _endNode = endNode || _.sample(_.values(this.network.nodes));
-            this.inFlight.push(new Packet(_startNode, _endNode, this.smart, this.policyVersion));
+            this.inFlight.push(new Packet(_startNode, _endNode, this.smartOpts));
         }
     }
 }

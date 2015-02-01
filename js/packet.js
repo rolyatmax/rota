@@ -8,8 +8,9 @@ const RADIUS = 6;
 const COMPLETION_REWARD = 2000;
 
 class Packet {
-    constructor(startNode, endNode, smart, policyVersion) {
-        this.smart = smart || false;
+    constructor(startNode, endNode, smartOpts={}) {
+        this.smart = !!smartOpts['version'];
+        this.smartOpts = smartOpts;
         this.id = _.uniqueId('packet-');
         this.startNode = startNode;
         this.endNode = endNode;
@@ -24,9 +25,9 @@ class Packet {
         var now = Date.now();
         if (!this.curEdgeStart) {
             this.curEdgeStart = now;
-            this.curEdge = this.curNode.selectEdge(this.policyVersion, this.smart, this.endNode);
+            this.curEdge = this.curNode.selectEdge(this.smartOpts, this.smart, this.endNode);
             if (this.smart) {
-                this.evaluationCb = this.curNode.getEvaluationCb(this.policyVersion, this.endNode, this.curEdge);
+                this.evaluationCb = this.curNode.getEvaluationCb(this.smartOpts, this.endNode, this.curEdge);
             }
             return;
         }
@@ -36,18 +37,18 @@ class Packet {
         this.curNode = this.curEdge.getOtherNode(this.curNode);
         if (this.curNode === this.endNode) {
             if (this.smart) {
-                this.evaluationCb(COMPLETION_REWARD, this.curNode.getMaxActionValue(this.policyVersion, this.endNode));
+                this.evaluationCb(COMPLETION_REWARD, this.curNode.getMaxActionValue(this.smartOpts, this.endNode));
             }
             this.totalTime = now - this.startTime;
             return;
         }
         if (this.smart) {
-            this.evaluationCb(-this.curEdge.latency, this.curNode.getMaxActionValue(this.policyVersion, this.endNode));
+            this.evaluationCb(-this.curEdge.latency, this.curNode.getMaxActionValue(this.smartOpts, this.endNode));
         }
         this.curEdgeStart = now;
-        this.curEdge = this.curNode.selectEdge(this.policyVersion, this.smart, this.endNode);
+        this.curEdge = this.curNode.selectEdge(this.smartOpts, this.smart, this.endNode);
         if (this.smart) {
-            this.evaluationCb = this.curNode.getEvaluationCb(this.policyVersion, this.endNode, this.curEdge);
+            this.evaluationCb = this.curNode.getEvaluationCb(this.smartOpts, this.endNode, this.curEdge);
         }
     }
     draw(ctx) {

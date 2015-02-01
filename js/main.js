@@ -8,11 +8,21 @@ var Stats = require('./stats');
 var network = new Network(32);
 network.connectAll();
 
-var smartPackets = new Packets(network, { 'smart': true });
-var stats = new Stats('.smart-stats', smartPackets);
+var smart1 = new Packets(network, {
+    'explore': 0.05,
+    'alpha': 0.9,
+    'discount': 0.8,
+    'initial': 200
+});
+var stats = new Stats('.smart-stats-1', smart1);
 
-var dumbPackets = new Packets(network, { 'smart': false });
-var stats = new Stats('.dumb-stats', dumbPackets);
+var smart2 = new Packets(network, {
+    'explore': 0.05,
+    'alpha': 0.9,
+    'discount': 0.8,
+    'initial': 200
+});
+var stats = new Stats('.smart-stats-2', smart2);
 
 var sketch = Sketch.create({
     'fullscreen': false,
@@ -22,29 +32,28 @@ var sketch = Sketch.create({
     'container': document.querySelector('.canvas-container'),
 
     update() {
-        smartPackets.update();
-        dumbPackets.update();
+        smart1.update();
+        smart2.update();
     },
 
     draw() {
         network.draw(this);
-        smartPackets.draw(this);
-        dumbPackets.draw(this);
+        smart1.draw(this);
+        smart2.draw(this);
     }
 });
 
 window.sketch = sketch;
 window.network = network;
 window._ = _;
-window.smartPackets = smartPackets;
-window.dumbPackets = dumbPackets;
+window.smart1 = smart1;
+window.smart2 = smart2;
 
-var playing = true;
-
-document.addEventListener('keydown', (e) => {
-    if (e.which === 32) { // spacebar
-        var method = playing ? 'stop' : 'start';
-        _.invoke([sketch, smartPackets, dumbPackets], method);
-        playing = !playing;
-    }
+_.each({
+    '.add-packets-1': smart1,
+    '.add-packets-2': smart2
+}, (collection, selector) => {
+    document.querySelector(selector)
+      .addEventListener('click', collection.addPackets.bind(collection, 1000));
 });
+

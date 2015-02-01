@@ -2,12 +2,6 @@ const SPACING = 60;
 const RADIUS = 4;
 const COLOR = 'rgba(0, 0, 0, 0.5)';
 
-const EXPLORE = 0.1;
-const ALPHA = 0.8;
-const DISCOUNT = 0.8;
-const INITIAL = 200;
-
-
 class Node {
     constructor(x, y) {
         this.x = x;
@@ -33,28 +27,32 @@ class Node {
             return edge.getOtherNode(this);
         });
     }
-    selectEdge(policyVersion, smart, endNode) {
+    selectEdge(smartOpts, smart, endNode) {
         if (!smart) {
             return _.sample(this.edges);
         }
-        var policy =
-        _ensureDefaults(this.policy, policyVersion, endNode, this.edges, INITIAL);
+        var policyVersion = smartOpts['version'];
+        _ensureDefaults(this.policy, policyVersion, endNode, this.edges, smartOpts['initial']);
         var actions = this.policy[policyVersion][endNode.id];
-        if (Math.random() > EXPLORE) {
-            let maxValue = this.getMaxActionValue(policyVersion, endNode);
+        if (Math.random() > smartOpts['explore']) {
+            let maxValue = this.getMaxActionValue(smartOpts, endNode);
             actions = _.where(actions, {'value': maxValue});
         }
         return _.sample(actions)['edge'];
     }
-    getMaxActionValue(policyVersion, endNode) {
-        _ensureDefaults(this.policy, policyVersion, endNode, this.edges, INITIAL);
+    getMaxActionValue(smartOpts, endNode) {
+        var policyVersion = smartOpts['version'];
+        _ensureDefaults(this.policy, policyVersion, endNode, this.edges, smartOpts['initial']);
         var maxAction = _.max(this.policy[policyVersion][endNode.id], (action) => { return action['value']; });
         return maxAction['value'];
     }
-    getEvaluationCb(policyVersion, endNode, edge) {
+    getEvaluationCb(smartOpts, endNode, edge) {
+        var policyVersion = smartOpts['version'];
+        var alpha = smartOpts['alpha'];
+        var discount = smartOpts['discount'];
         return function(reward, curMaxValue) {
             var prevVal = this.policy[policyVersion][endNode.id][edge.id]['value'];
-            var newVal = (1 - DISCOUNT) * prevVal + ALPHA * (reward + DISCOUNT * curMaxValue);
+            var newVal = (1 - discount) * prevVal + alpha * (reward + discount * curMaxValue);
             this.policy[policyVersion][endNode.id][edge.id]['value'] = newVal;
         }.bind(this);
     }
