@@ -1,7 +1,8 @@
 var _ = require('underscore');
+var settings = require('./settings');
 
 const COLOR = 'rgba(0, 0, 0, 0.4)';
-const LATENCY_RANGE = [20, 180];
+const LATENCY_RANGE = settings.LATENCY_RANGE;
 
 class Edge {
     constructor(node1, node2) {

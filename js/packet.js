@@ -1,11 +1,14 @@
 var _ = require('underscore');
+var settings = require('./settings');
 
-const REDZONE_TIME = 5000;
+const REDZONE_TIME = settings.REDZONE_TIME;
 const GREEN = [39, 179, 171];
 const RED = [167, 29, 36];
 const OPACITY = 0.7;
 const RADIUS = 6;
 const COMPLETION_REWARD = 2000;
+const LATENCY_RANGE = settings.LATENCY_RANGE;
+const SCORE_RANGE = [20, 180];
 
 class Packet {
     constructor(startNode, endNode, smartOpts={}) {
@@ -43,7 +46,8 @@ class Packet {
             return;
         }
         if (this.smart) {
-            this.evaluationCb(-this.curEdge.latency, this.curNode.getMaxActionValue(this.smartOpts, this.endNode));
+            let score = -1 * (map(this.curEdge.latency, LATENCY_RANGE[0], LATENCY_RANGE[1], ...SCORE_RANGE));
+            this.evaluationCb(score, this.curNode.getMaxActionValue(this.smartOpts, this.endNode));
         }
         this.curEdgeStart = now;
         this.curEdge = this.curNode.selectEdge(this.smartOpts, this.smart, this.endNode);

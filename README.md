@@ -17,3 +17,6 @@ open index.html
  - show latency on edges?
  - allow edges to change in latency (based on usage)?
  - add n packets
+
+ - IS it finding the OPTIMAL route??
+ - collect stats on individual trips?
