@@ -5,9 +5,9 @@ var Network = require('./network');
 var Packets = require('./packets');
 var Stats = require('./stats');
 
-const NODE_COUNT = 36;
+const ROW_COLUMN_COUNT = 6;
 
-var network = new Network(NODE_COUNT);
+var network = new Network(ROW_COLUMN_COUNT * ROW_COLUMN_COUNT);
 network.connectAll();
 
 var smart1 = new Packets(network, {
@@ -15,7 +15,7 @@ var smart1 = new Packets(network, {
     'alpha': 0.9,
     'discount': 0.8,
     'initial': 200,
-    'completionReward': 500
+    'completionReward': 50000
 });
 var stats1 = new Stats('.smart-stats-1', smart1);
 smart1.setStats(stats1);
@@ -73,11 +73,24 @@ document.addEventListener('keydown', (e) => {
 });
 
 _.each({
-    '.add-packets-1': smart1,
-    '.add-packets-2': smart2
+    '.packets-controls-1': smart1,
+    '.packets-controls-2': smart2
 }, (collection, selector) => {
-    document.querySelector(selector)
-      .addEventListener('click', collection.addPackets.bind(collection, 1000));
+    (() => {
+        var coll = collection;
+        document.querySelector(`${selector} .add`).addEventListener('click', () => {
+            let count = parseInt(document.querySelector(`${selector} input.count`).value, 10);
+            let x = parseInt(document.querySelector(`${selector} input.x`).value, 10);
+            let y = parseInt(document.querySelector(`${selector} input.y`).value, 10);
+
+            x = x < ROW_COLUMN_COUNT ? x : null;
+            y = y < ROW_COLUMN_COUNT ? y : null;
+
+            var coords = _.isNull(x) || _.isNull(y) ? [] : [x, y];
+
+            coll.addPackets(count, ...coords);
+        });
+    })();
 });
 
 document.querySelector('.reset-stats').addEventListener('click', () => {

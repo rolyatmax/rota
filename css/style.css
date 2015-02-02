@@ -63,6 +63,19 @@ button {
     margin-right: 5px;
 }
 
+input {
+    padding: 8px 2px;
+    margin: 0 2px;
+}
+
+input.count {
+    width: 40px;
+}
+
+input.x, input.y {
+    width: 30px;
+}
+
 td {
     padding: 5px;
 }
