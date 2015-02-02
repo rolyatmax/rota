@@ -51,7 +51,9 @@ var sketch = Sketch.create({
     touchstart() {
         var {x, y} = this.touches[0];
         var edge = network.findClosestEdge(x, y);
-        edge.toggleActive();
+        if (edge) {
+            edge.toggleActive();
+        }
     }
 });
 
