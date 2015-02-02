@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "Routing with reinforcement learning",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node_modules/.bin/browserify js/main.js -o js/build.js -v"
   },
   "repository": {
     "type": "git",
