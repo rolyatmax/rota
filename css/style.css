@@ -41,7 +41,7 @@ h4 {
     position: relative;
 }
 
-.stats, .controls {
+.stats-container, .controls {
     width: 300px;
     position: absolute;
     top: 0;
@@ -78,4 +78,9 @@ input.x, input.y {
 
 td {
     padding: 5px;
+}
+
+.popular-addresses {
+    text-align: right;
+    margin: 5px;
 }

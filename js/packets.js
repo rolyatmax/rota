@@ -1,7 +1,7 @@
 var _ = require('underscore');
 var Packet = require('./packet');
 
-const RATE = 2;
+const RATE = 10;
 
 class Packets {
     constructor(network, smartOpts={}) {

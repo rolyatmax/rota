@@ -1,5 +1,4 @@
 var _ = require('underscore');
-var settings = require('./settings');
 
 const RENDER_RATE = 500;
 
@@ -8,6 +7,8 @@ var template = require('./stats.hbs');
 class Stats {
     constructor(el, packets) {
         this.el = document.querySelector(el);
+        this.statsContainer = this.el.querySelector('.stats');
+        this.addressesContainer = this.el.querySelector('.popular-addresses');
         this.packets = packets;
         this.timeout = null;
         this.resetStats();
@@ -15,7 +16,9 @@ class Stats {
     }
     poll() {
         this.timeout = setTimeout(this.poll.bind(this), RENDER_RATE);
-        this.render();
+        if (this.packets.inFlight.length) {
+            this.render();
+        }
     }
     render() {
         var now = Date.now();
@@ -35,7 +38,7 @@ class Stats {
 
         ctx = _.extend(ctx, this.comparePaths());
 
-        this.el.innerHTML = template(ctx);
+        this.statsContainer.innerHTML = template(ctx);
     }
     resetStats() {
         this.totalCount = 0;
@@ -44,13 +47,16 @@ class Stats {
         this.aggregateTimes = 0;
         this.pathStats = {};
         this.render();
+        this.addressesContainer.innerHTML = '';
     }
     logFinish(packet) {
         this.completedCount += 1;
         this.aggregateTimes += packet.totalTime;
         this.finished.add(packet);
 
-        var pathKey = settings.generatePathID(packet.startNode, packet.endNode);
+        var {startNode, endNode} = packet;
+
+        var pathKey = `${startNode}-${endNode}`;
         _ensureDefaults(this.pathStats, pathKey);
 
         var pathStat = this.pathStats[pathKey];
@@ -116,6 +122,16 @@ class Stats {
         // console.log(_.map(data, (val, key) => `${key}: ${val}`).join('\n'));
 
         return data;
+    }
+    getPopularAddresses() {
+        var endNodes = _.pluck(this.packets.inFlight, 'endNode');
+        var pairs = _.pairs(_.countBy(endNodes, 'id'));
+        var sorted = _.sortBy(pairs, (pair) => -pair[1]);
+        return _.object(_.first(sorted, 3));
+    }
+    showPopularAddresses() {
+        var addresses = this.getPopularAddresses();
+        this.addressesContainer.innerHTML = _.keys(addresses).join(', ');
     }
 }
 

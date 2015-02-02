@@ -5,8 +5,6 @@ var settings = require('./settings');
 
 const SPACING = settings.SPACING;
 
-var generatePathID = settings.generatePathID;
-
 class Network {
     constructor(n) {
         this.width = this.height = Math.ceil(Math.sqrt(n));
@@ -33,7 +31,7 @@ class Network {
         return [x, y];
     }
     getNode(x, y) {
-        return this.nodes[key(x, y)]
+        return this.nodes[key(x, y)];
     }
     getEdge(node1, node2) {
         var edge = this.edges[generatePathID(node1, node2)];
@@ -93,7 +91,7 @@ class Network {
                 node.addEdge(edge);
                 neighbor.addEdge(edge);
                 this.edges[edge.id] = edge;
-            })
+            });
         });
     }
     draw(ctx) {
@@ -104,6 +102,13 @@ class Network {
 
 function key(x, y) {
     return x + '|' + y;
+}
+
+// deterministic way to generate ids based on a 2-node combo
+function generatePathID(node1, node2) {
+    var id1 = node1.id;
+    var id2 = node2.id;
+    return id1 < id2 ? id1 + '-' + id2 : id2 + '-' + id1;
 }
 
 module.exports = Network;

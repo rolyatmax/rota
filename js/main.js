@@ -17,7 +17,7 @@ var smart1 = new Packets(network, {
     'initial': 200,
     'completionReward': 50000
 });
-var stats1 = new Stats('.smart-stats-1', smart1);
+var stats1 = new Stats('.algo-1', smart1);
 smart1.setStats(stats1);
 
 var smart2 = new Packets(network, {
@@ -27,7 +27,7 @@ var smart2 = new Packets(network, {
     'initial': 200,
     'completionReward': 2000
 });
-var stats2 = new Stats('.smart-stats-2', smart2);
+var stats2 = new Stats('.algo-2', smart2);
 smart2.setStats(stats2);
 
 var sketch = Sketch.create({
@@ -73,8 +73,8 @@ document.addEventListener('keydown', (e) => {
 });
 
 _.each({
-    '.packets-controls-1': smart1,
-    '.packets-controls-2': smart2
+    '.algo-1': smart1,
+    '.algo-2': smart2
 }, (collection, selector) => {
     (() => {
         var coll = collection;
@@ -95,4 +95,8 @@ _.each({
 
 document.querySelector('.reset-stats').addEventListener('click', () => {
     _.invoke([stats1, stats2], 'resetStats');
+});
+
+document.querySelector('.get-popular-addresses').addEventListener('click', () => {
+    _.invoke([stats1, stats2], 'showPopularAddresses');
 });
