@@ -42,7 +42,7 @@ h4 {
 }
 
 .stats-container, .controls {
-    width: 300px;
+    width: 320px;
     position: absolute;
     top: 0;
     right: 0;
@@ -54,9 +54,23 @@ h4 {
 }
 
 button {
+    outline: none;
     padding: 10px;
     margin: 5px 0;
+    background-color: #f5f5f5;
+    border: 1px solid #e5e5e5;
+    border-radius: 3px;
+    font-weight: 500;
+    color: #333;
+    font-size: 12px;
+    cursor: pointer;
+    -webkit-transition: background-color 200ms linear;
 }
+
+button:hover {
+    background-color: #eaeaea;
+}
+
 
 .controls button {
     float: left;
@@ -64,8 +78,13 @@ button {
 }
 
 input {
-    padding: 8px 2px;
+    outline: none;
+    padding: 9px 5px;
     margin: 0 2px;
+    font-size: 12px;
+    color: #333;
+    border-radius: 3px;
+    border: 1px solid #ccc;
 }
 
 input.count {
