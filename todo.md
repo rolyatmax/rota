@@ -6,6 +6,8 @@
  - allow full partitions
  - add Infojs
 
+ - adjust render speed
+
  - show smartOpts for comparing algos
  - allow edges to change in latency (based on usage)?
 
