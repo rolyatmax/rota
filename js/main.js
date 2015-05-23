@@ -24,14 +24,6 @@ var sketch = Sketch.create({
     'width': 800,
     'height': 400,
     'container': document.querySelector('.canvas-container'),
-
-    touchstart() {
-        var {x, y} = this.touches[0];
-        var edge = network.findClosestEdge(x, y);
-        if (edge) {
-            edge.toggleActive();
-        }
-    }
 });
 
 var smart1 = new Packets(network, {
@@ -70,6 +62,19 @@ sketch.draw = () => {
     }
 };
 
+sketch.touchstart = () => {
+    var {x, y} = sketch.touches[0];
+    if (sketch.keys['SHIFT']) {
+        let node = network.findClosestNodes(x, y, 1)[0];
+        smart1.addPackets(getCount('.algo-1'), node.x, node.y);
+        return;
+    }
+    var edge = network.findClosestEdge(x, y);
+    if (edge) {
+        edge.toggleActive();
+    }
+}
+
 window.sketch = sketch;
 window.network = network;
 window._ = _;
@@ -80,10 +85,7 @@ var playing = false;
 
 document.addEventListener('keydown', (e) => {
     if (e.which === 32) { // spacebar
-        var method = playing ? 'stop' : 'start';
-        _.invoke([smart1, smart2], method);
-        playing = !playing;
-        e.preventDefault();
+        sketch.toggle();
     }
 });
 
@@ -94,16 +96,7 @@ _.each({
     (() => {
         var coll = collection;
         document.querySelector(`${selector} .add`).addEventListener('click', () => {
-            let count = parseInt(document.querySelector(`${selector} input.count`).value, 10);
-            let x = parseInt(document.querySelector(`${selector} input.x`).value, 10);
-            let y = parseInt(document.querySelector(`${selector} input.y`).value, 10);
-
-            x = x < ROW_COLUMN_COUNT ? x : null;
-            y = y < ROW_COLUMN_COUNT ? y : null;
-
-            var coords = _.isNull(x) || _.isNull(y) ? [] : [x, y];
-
-            coll.addPackets(count, ...coords);
+            coll.addPackets(getCount(selector));
         });
     })();
 });
@@ -118,3 +111,7 @@ $popularAddressesBtn.addEventListener('click', () => {
     var method = showOverlay ? 'add': 'remove';
     $popularAddressesBtn.classList[method]('on');
 });
+
+function getCount(selector) {
+    return parseInt(document.querySelector(`${selector} input.count`).value, 10);
+}

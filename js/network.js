@@ -4,6 +4,8 @@ var Edge = require('./edge');
 var settings = require('./settings');
 
 const SPACING = settings.SPACING;
+const RADIUS = 12;
+const COLOR = 'rgba(96, 57, 193, 0.5)'; // purple
 
 class Network {
     constructor(n) {
@@ -40,7 +42,7 @@ class Network {
         }
         return edge;
     }
-    findClosestEdge(touchX, touchY) {
+    findClosestNodes(touchX, touchY, nodeCount) {
         var normalized = _.map([touchX, touchY], (num) => {
             return (num / SPACING) - 1;
         });
@@ -59,7 +61,7 @@ class Network {
 
         var [normalX, normalY] = normalized;
 
-        var closest = _.map([null, null], () => {
+        var closest = _.map(_.range(nodeCount), () => {
             var vector = _.min(possibleVectors, (vector) => {
                 var [x, y] = vector;
                 return sqrt(pow(x - normalX, 2) + pow(y - normalY, 2));
@@ -73,6 +75,10 @@ class Network {
             return console.log('Missing nodes', closest);
         }
 
+        return closest;
+    }
+    findClosestEdge(touchX, touchY) {
+        var closest = this.findClosestNodes(touchX, touchY, 2);
         return this.getEdge(...closest);
     }
     connectAll() {
@@ -97,6 +103,16 @@ class Network {
     draw(ctx) {
         _.invoke(this.nodes, 'draw', ctx);
         _.invoke(_.values(this.edges), 'draw', ctx);
+        if (ctx.keys['SHIFT']) {
+            let nodes = network.findClosestNodes(ctx.mouse.x, ctx.mouse.y, 1)
+            if (nodes && nodes.length) {
+                let [x, y] = nodes[0].loc;
+                ctx.beginPath();
+                ctx.arc(x, y, RADIUS, 0, TWO_PI);
+                ctx.fillStyle = COLOR;
+                ctx.fill();
+            }
+        }
     }
 }
 
