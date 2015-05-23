@@ -64,8 +64,10 @@ h4 {
 .stats-container, .controls {
     width: 320px;
     position: absolute;
-    top: 0;
+    top: 55px;
     right: 0;
+    border-top: 1px solid #333;
+    padding-top: 16px;
 }
 
 .controls {
@@ -135,7 +137,12 @@ input.x, input.y {
 }
 
 td {
-    padding: 5px;
+      padding: 6px 10px;
+      min-width: 55px;
+}
+
+td:first-child {
+    text-align: right;
 }
 
 .popular-addresses {
