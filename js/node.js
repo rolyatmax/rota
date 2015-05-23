@@ -40,7 +40,8 @@ class Node {
             let maxValue = this.getMaxActionValue(smartOpts, endNode);
             validActions = _.where(validActions, {'value': maxValue});
         }
-        return _.sample(validActions)['edge'];
+        var action = _.sample(validActions);
+        return action && action['edge'];
     }
     getMaxActionValue(smartOpts, endNode) {
         var policyVersion = smartOpts['version'];

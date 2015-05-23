@@ -28,9 +28,13 @@ class Packet {
         if (!this.curEdgeStart) {
             this.curEdgeStart = now;
             this.curEdge = this.curNode.selectEdge(this.smartOpts, this.smart, this.endNode);
-            if (this.smart) {
+            if (this.smart && this.curEdge) {
                 this.evaluationCb = this.curNode.getEvaluationCb(this.smartOpts, this.endNode, this.curEdge);
             }
+            return;
+        }
+        if (!this.curEdge) {
+            this.curEdge = this.curNode.selectEdge(this.smartOpts, this.smart, this.endNode);
             return;
         }
         if (now < (this.curEdge.latency + this.curEdgeStart)) {
@@ -38,28 +42,28 @@ class Packet {
         }
         this.curNode = this.curEdge.getOtherNode(this.curNode);
         if (this.curNode === this.endNode) {
-            if (this.smart) {
+            if (this.evaluationCb) {
                 let completionReward = this.smartOpts['completionReward'];
                 this.evaluationCb(completionReward, this.curNode.getMaxActionValue(this.smartOpts, this.endNode));
             }
             this.totalTime = now - this.startTime;
             return;
         }
-        if (this.smart) {
+        if (this.evaluationCb) {
             let score = -1 * (map(this.curEdge.latency, LATENCY_RANGE[0], LATENCY_RANGE[1], ...SCORE_RANGE));
             this.evaluationCb(score, this.curNode.getMaxActionValue(this.smartOpts, this.endNode));
         }
         this.curEdgeStart = now;
         this.curEdge = this.curNode.selectEdge(this.smartOpts, this.smart, this.endNode);
-        if (this.smart) {
+        if (this.smart && this.curEdge) {
             this.evaluationCb = this.curNode.getEvaluationCb(this.smartOpts, this.endNode, this.curEdge);
         }
     }
     draw(ctx) {
-        var nextNode = this.curEdge.getOtherNode(this.curNode);
+        var nextNode = this.curEdge ? this.curEdge.getOtherNode(this.curNode): this.curNode;
         var [curX, curY] = this.curNode.loc;
         var [nextX, nextY] = nextNode.loc;
-        var latency = this.curEdge.latency;
+        var latency = this.curEdge ? this.curEdge.latency : 1;
         var now = Date.now();
         var curTime = now - this.curEdgeStart;
         var x = easing(curX, nextX, latency, curTime);
