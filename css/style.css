@@ -10,6 +10,22 @@ body {
     padding-top: 20px;
 }
 
+.info_container p {
+    margin: 1em 0;
+    line-height: 1.8em;
+}
+
+.info_container pre {
+    background-color: #333;
+    padding: 10px 15px;
+    border-radius: 5px;
+    overflow-y: scroll;
+}
+
+.info_container code {
+    font-family: monospace;
+}
+
 h1, h2, h3, h4 {
     line-height: 1.5em;
 }

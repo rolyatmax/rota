@@ -5,7 +5,15 @@ var Network = require('./network');
 var Packets = require('./packets');
 var Stats = require('./stats');
 
+var Info = require('./lib/info');
+
 const ROW_COLUMN_COUNT = 6;
+
+var info = new Info({
+    url: 'README.md',
+    keyTrigger: true,
+    container: 'wrapper'
+});
 
 var network = new Network(ROW_COLUMN_COUNT * ROW_COLUMN_COUNT);
 network.connectAll();

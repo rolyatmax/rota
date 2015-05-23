@@ -5,36 +5,40 @@
         <title>Rota</title>
         <link href='https://fonts.googleapis.com/css?family=Raleway:900,300,600' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="css/reset.css">
+        <link rel="stylesheet" href="css/info.css">
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
-        <div class="container">
-            <h1>Rota</h1>
-            <h3>Routing with Reinforcement Learning</h3>
-            <div class="content">
-                <div class="canvas-container"></div>
-                <div class="stats-container">
-                    <h4>Smart Routing v1</h4>
-                    <div class="algo-1">
-                        <button class="add">Add Packets</button>
-                        <input class="count" type="text" value="250"> to (x,y): <input class="x" type="text"><input class="y" type="text">
-                        <div class="popular-addresses"></div>
-                        <div class="stats"></div>
+        <div id="wrapper">
+            <div class="container">
+                <h1>Rota</h1>
+                <h3>Routing with Reinforcement Learning</h3>
+                <div class="content">
+                    <div class="canvas-container"></div>
+                    <div class="stats-container">
+                        <h4>Smart Routing v1</h4>
+                        <div class="algo-1">
+                            <button class="add">Add Packets</button>
+                            <input class="count" type="text" value="250"> to (x,y): <input class="x" type="text"><input class="y" type="text">
+                            <div class="popular-addresses"></div>
+                            <div class="stats"></div>
+                        </div>
+                        <h4>Smart Routing v2</h4>
+                        <div class="algo-2">
+                            <button class="add">Add Packets</button>
+                            <input class="count" type="text" value="250"> to (x,y): <input class="x" type="text"><input class="y" type="text">
+                            <div class="popular-addresses"></div>
+                            <div class="stats"></div>
+                        </div>
                     </div>
-                    <h4>Smart Routing v2</h4>
-                    <div class="algo-2">
-                        <button class="add">Add Packets</button>
-                        <input class="count" type="text" value="250"> to (x,y): <input class="x" type="text"><input class="y" type="text">
-                        <div class="popular-addresses"></div>
-                        <div class="stats"></div>
+                    <div class="controls">
+                        <button class="reset-stats">Reset Stats</button>
+                        <button class="get-popular-addresses">Show Popular Current Addresses</button>
                     </div>
-                </div>
-                <div class="controls">
-                    <button class="reset-stats">Reset Stats</button>
-                    <button class="get-popular-addresses">Show Popular Current Addresses</button>
                 </div>
             </div>
         </div>
+        <script src="js/lib/Markdown.Converter.js"></script>
         <script src="js/build.js"></script>
         <script>
             var _gaq = _gaq || [];
