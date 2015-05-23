@@ -91,6 +91,11 @@ button:hover {
     background-color: #eaeaea;
 }
 
+button.on {
+    background-color: #aaa;
+    color: white;
+    border-color: #888;
+}
 
 .controls button {
     float: left;

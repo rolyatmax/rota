@@ -1,16 +1,20 @@
 var _ = require('underscore');
 
 const RENDER_RATE = 500;
+const RADIUS = 14;
+const MAX_OVERLAY_OPACITY = 0.6;
+const OVERLAY_COLOR = [253, 110, 0]; // orange
 
 var template = require('./stats.hbs');
 
 class Stats {
-    constructor(el, packets) {
+    constructor(el, packets, ctx) {
         this.el = document.querySelector(el);
         this.statsContainer = this.el.querySelector('.stats');
-        this.addressesContainer = this.el.querySelector('.popular-addresses');
         this.packets = packets;
+        this.ctx = ctx;
         this.timeout = null;
+        this.showOverlay = false;
         this.resetStats();
         this.poll();
     }
@@ -47,7 +51,6 @@ class Stats {
         this.aggregateTimes = 0;
         this.pathStats = {};
         this.render();
-        this.addressesContainer.innerHTML = '';
     }
     logFinish(packet) {
         this.completedCount += 1;
@@ -123,16 +126,35 @@ class Stats {
 
         return data;
     }
-    getPopularAddresses() {
+    showAddressOverlay() {
+        if (!this.packets.inFlight.length) {
+            return;
+        }
         var endNodes = _.pluck(this.packets.inFlight, 'endNode');
-        var pairs = _.pairs(_.countBy(endNodes, 'id'));
-        var sorted = _.sortBy(pairs, (pair) => -pair[1]);
-        return _.object(_.first(sorted, 3));
+        var groups = _.groupBy(endNodes, 'id');
+        var addresses = _.map(groups, (group) => {
+            return {
+                'node': group[0],
+                'count': group.length
+            };
+        });
+        this.draw(this.ctx, addresses);
     }
-    showPopularAddresses() {
-        var addresses = this.getPopularAddresses();
-        this.addressesContainer.innerHTML = _.keys(addresses).join(', ');
+    draw(ctx, addresses) {
+        _.each(addresses, (address) => {
+            var [x, y] = address.node.loc;
+            ctx.beginPath();
+            ctx.arc(x, y, RADIUS, 0, TWO_PI);
+            ctx.fillStyle = getColor(address.count);
+            ctx.fill();
+        })
     }
+}
+
+function getColor(count) {
+    var opacity = max(0.3, min(count / 20, 1)) * MAX_OVERLAY_OPACITY;
+    var [r, g, b] = OVERLAY_COLOR;
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
 }
 
 function _ensureDefaults(pathStats, pathKey) {

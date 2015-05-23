@@ -18,43 +18,12 @@ var info = new Info({
 var network = new Network(ROW_COLUMN_COUNT * ROW_COLUMN_COUNT);
 network.connectAll();
 
-var smart1 = new Packets(network, {
-    'explore': 0.15,
-    'alpha': 0.9,
-    'discount': 0.8,
-    'initial': 200,
-    'completionReward': 50000
-});
-var stats1 = new Stats('.algo-1', smart1);
-smart1.setStats(stats1);
-
-var smart2 = new Packets(network, {
-    'explore': 0.05,
-    'alpha': 0.9,
-    'discount': 0.8,
-    'initial': 200,
-    'completionReward': 2000
-});
-var stats2 = new Stats('.algo-2', smart2);
-smart2.setStats(stats2);
-
 var sketch = Sketch.create({
     'fullscreen': false,
     'autopause': false,
     'width': 800,
     'height': 400,
     'container': document.querySelector('.canvas-container'),
-
-    update() {
-        smart1.update();
-        smart2.update();
-    },
-
-    draw() {
-        network.draw(this);
-        smart1.draw(this);
-        smart2.draw(this);
-    },
 
     touchstart() {
         var {x, y} = this.touches[0];
@@ -64,6 +33,42 @@ var sketch = Sketch.create({
         }
     }
 });
+
+var smart1 = new Packets(network, {
+    'explore': 0.15,
+    'alpha': 0.9,
+    'discount': 0.8,
+    'initial': 200,
+    'completionReward': 50000
+});
+var stats1 = new Stats('.algo-1', smart1, sketch);
+smart1.setStats(stats1);
+
+var smart2 = new Packets(network, {
+    'explore': 0.05,
+    'alpha': 0.9,
+    'discount': 0.8,
+    'initial': 200,
+    'completionReward': 2000
+});
+var stats2 = new Stats('.algo-2', smart2, sketch);
+smart2.setStats(stats2);
+
+var showOverlay = false;
+
+sketch.update = () => {
+    smart1.update();
+    smart2.update();
+};
+
+sketch.draw = () => {
+    network.draw(sketch);
+    smart1.draw(sketch);
+    smart2.draw(sketch);
+    if (showOverlay) {
+        _.invoke([stats1, stats2], 'showAddressOverlay');
+    }
+};
 
 window.sketch = sketch;
 window.network = network;
@@ -107,6 +112,9 @@ document.querySelector('.reset-stats').addEventListener('click', () => {
     _.invoke([stats1, stats2], 'resetStats');
 });
 
-document.querySelector('.get-popular-addresses').addEventListener('click', () => {
-    _.invoke([stats1, stats2], 'showPopularAddresses');
+var $popularAddressesBtn = document.querySelector('.get-popular-addresses');
+$popularAddressesBtn.addEventListener('click', () => {
+    showOverlay = !showOverlay;
+    var method = showOverlay ? 'add': 'remove';
+    $popularAddressesBtn.classList[method]('on');
 });
