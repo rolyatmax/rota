@@ -53,7 +53,7 @@ stats.push(stats1);
 // packets.push(smart2);
 // stats.push(stats2);
 
-var showOverlay = false;
+var showOverlay = true;
 
 sketch.update = () => {
     _.invoke(packets, 'update');
