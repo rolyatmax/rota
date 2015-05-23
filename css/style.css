@@ -10,6 +10,10 @@ body {
     padding-top: 20px;
 }
 
+.info_container h1 {
+    text-align: left;
+}
+
 .info_container p {
     margin: 1em 0;
     line-height: 1.8em;
