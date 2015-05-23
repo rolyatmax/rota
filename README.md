@@ -11,7 +11,7 @@ Interestingly, the routing knowledge (and the learning itself) is distributed am
 
 You can click on the connections between the nodes to add/remove them. The lighter the line, the larger the latency - darker lines are faster connections - and the routing algorithm will optimize for fastest delivery, not necessarily the fewest number of steps. You can click around on the connections, changing the topology of the network, and then watch the nodes adapt to the new network as more and more packets are added.
 
-Reinforcement learning is essentially based on a trial-and-error methodology, so the more packets a topology has routed, the better it will be at routing future packets. In some topologies, certain nodes will be difficult to reach. By dropping in packets addressed to a specific node, the nodes in the network will become better and better and routing packets to that node.
+Reinforcement learning is essentially based on a trial-and-error methodology, so the more packets a topology has routed, the better it will be at routing future packets. In some topologies, certain nodes will be difficult to reach. By dropping in packets addressed to a specific node (by shift-clicking a node), the nodes in the network will become better and better and routing packets to that node.
 
 There are a number of improvements I hope to make which haven't made their way into this version of rota. I'd like to make available better metrics, heatmaps for each address, TTLs for packets, and have each connection's traffic affect its latency. This last change would allow the algorithm to be tested for its ability to evenly distribute traffic in the network.
 

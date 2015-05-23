@@ -1,6 +1,5 @@
 # To Do
 
- - Click on node to send traffic
  - Show heatmaps by clicking on each node
  - packet TTLs
 

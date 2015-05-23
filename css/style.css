@@ -102,6 +102,20 @@ button.on {
     margin-right: 5px;
 }
 
+.instructions {
+    width: 320px;
+    position: absolute;
+    top: 252px;
+    right: 0;
+    line-height: 1.5em;
+    border-top: 1px solid #333;
+    padding-top: 20px;
+}
+
+.instructions li {
+    list-style: initial;
+}
+
 input {
     outline: none;
     padding: 9px 5px;

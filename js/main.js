@@ -26,6 +26,9 @@ var sketch = Sketch.create({
     'container': document.querySelector('.canvas-container'),
 });
 
+var packets = [];
+var stats = [];
+
 var smart1 = new Packets(network, {
     'explore': 0.15,
     'alpha': 0.9,
@@ -33,32 +36,34 @@ var smart1 = new Packets(network, {
     'initial': 200,
     'completionReward': 50000
 });
-var stats1 = new Stats('.algo-1', smart1, sketch);
+var stats1 = new Stats('.algo-0', smart1, sketch);
 smart1.setStats(stats1);
+packets.push(smart1);
+stats.push(stats1);
 
-var smart2 = new Packets(network, {
-    'explore': 0.05,
-    'alpha': 0.9,
-    'discount': 0.8,
-    'initial': 200,
-    'completionReward': 2000
-});
-var stats2 = new Stats('.algo-2', smart2, sketch);
-smart2.setStats(stats2);
+// var smart2 = new Packets(network, {
+//     'explore': 0.05,
+//     'alpha': 0.9,
+//     'discount': 0.8,
+//     'initial': 200,
+//     'completionReward': 2000
+// });
+// var stats2 = new Stats('.algo-2', smart2, sketch);
+// smart2.setStats(stats2);
+// packets.push(smart2);
+// stats.push(stats2);
 
 var showOverlay = false;
 
 sketch.update = () => {
-    smart1.update();
-    smart2.update();
+    _.invoke(packets, 'update');
 };
 
 sketch.draw = () => {
     network.draw(sketch);
-    smart1.draw(sketch);
-    smart2.draw(sketch);
+    _.invoke(packets, 'draw', sketch);
     if (showOverlay) {
-        _.invoke([stats1, stats2], 'showAddressOverlay');
+        _.invoke(stats, 'showAddressOverlay');
     }
 };
 
@@ -66,7 +71,7 @@ sketch.touchstart = () => {
     var {x, y} = sketch.touches[0];
     if (sketch.keys['SHIFT']) {
         let node = network.findClosestNodes(x, y, 1)[0];
-        smart1.addPackets(getCount('.algo-1'), node.x, node.y);
+        smart1.addPackets(getCount('.algo-0'), node.x, node.y);
         return;
     }
     var edge = network.findClosestEdge(x, y);
@@ -79,7 +84,7 @@ window.sketch = sketch;
 window.network = network;
 window._ = _;
 window.smart1 = smart1;
-window.smart2 = smart2;
+// window.smart2 = smart2;
 
 var playing = false;
 
@@ -89,11 +94,9 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-_.each({
-    '.algo-1': smart1,
-    '.algo-2': smart2
-}, (collection, selector) => {
+_.each(packets, (collection, i) => {
     (() => {
+        var selector = `.algo-${i}`;
         var coll = collection;
         document.querySelector(`${selector} .add`).addEventListener('click', () => {
             coll.addPackets(getCount(selector));
@@ -102,7 +105,7 @@ _.each({
 });
 
 document.querySelector('.reset-stats').addEventListener('click', () => {
-    _.invoke([stats1, stats2], 'resetStats');
+    _.invoke(stats, 'resetStats');
 });
 
 var $popularAddressesBtn = document.querySelector('.get-popular-addresses');
