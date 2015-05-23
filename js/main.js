@@ -1,5 +1,7 @@
 var _ = require('underscore');
 
+require("babel/polyfill");
+
 var Sketch = require('./lib/sketch');
 var Network = require('./network');
 var Packets = require('./packets');
@@ -71,7 +73,9 @@ sketch.touchstart = () => {
     var {x, y} = sketch.touches[0];
     if (sketch.keys['SHIFT']) {
         let node = network.findClosestNodes(x, y, 1)[0];
-        smart1.addPackets(getCount('.algo-0'), node.x, node.y);
+        if (node) {
+            smart1.addPackets(getCount('.algo-0'), node.x, node.y);
+        }
         return;
     }
     var edge = network.findClosestEdge(x, y);
@@ -87,12 +91,6 @@ window.smart1 = smart1;
 // window.smart2 = smart2;
 
 var playing = false;
-
-document.addEventListener('keydown', (e) => {
-    if (e.which === 32) { // spacebar
-        sketch.toggle();
-    }
-});
 
 _.each(packets, (collection, i) => {
     (() => {

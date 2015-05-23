@@ -22,18 +22,19 @@
   },
   "homepage": "https://github.com/rolyatmax/rota",
   "devDependencies": {
-    "6to5ify": "4.0.0",
+    "babelify": "6.1.1",
     "browserify": "4.1.9",
     "hbsify": "1.0.1",
     "watchify": "2.2.1"
   },
   "dependencies": {
+    "babel": "^5.4.7",
     "underscore": "1.7.0"
   },
   "browserify": {
     "transform": [
       "hbsify",
-      "6to5ify"
+      "babelify"
     ]
   }
 }

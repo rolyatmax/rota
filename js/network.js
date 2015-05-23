@@ -79,7 +79,7 @@ class Network {
     }
     findClosestEdge(touchX, touchY) {
         var closest = this.findClosestNodes(touchX, touchY, 2);
-        return this.getEdge(...closest);
+        return closest ? this.getEdge(...closest) : null;
     }
     connectAll() {
         _.each(this.nodes, (node) => {
