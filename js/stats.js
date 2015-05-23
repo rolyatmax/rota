@@ -20,9 +20,7 @@ class Stats {
     }
     poll() {
         this.timeout = setTimeout(this.poll.bind(this), RENDER_RATE);
-        if (this.packets.inFlight.length) {
-            this.render();
-        }
+        this.render();
     }
     render() {
         var now = Date.now();
