@@ -3,8 +3,6 @@
  - Click on node to send traffic
  - Show heatmaps by clicking on each node
  - packet TTLs
- - allow full partitions
- - add Infojs
 
  - adjust render speed
 
