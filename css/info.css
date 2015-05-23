@@ -7,7 +7,6 @@
 .info_container {
 	text-align: left;
 	padding: 30px 50px;
-	width: 400px;
 	min-height: 100%;
 	position: absolute;
 	top: 0;
@@ -21,7 +20,10 @@
 	line-height: 1.5em;
 	letter-spacing: 0;
 	font-size: 0.95em;
-	box-sizing: content-box;
+	width: 500px;
+	height: 100vh;
+	overflow: scroll;
+	box-sizing: border-box;
 }
 
 .info_container.open {
