@@ -22,10 +22,8 @@ There are a number of improvements I hope to make which haven't made their way i
 To run this project yourself, just clone the repo and run from the root:
 
     npm install
-    npm run-script build
-    python -m SimpleHTTPServer 3434
-
-Then point your browser to `localhost:3434`.
+    npm run build
+    npm run serve
 
 ------------------------
 

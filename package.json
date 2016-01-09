@@ -2,9 +2,10 @@
   "name": "rota",
   "version": "0.0.1",
   "description": "Routing with reinforcement learning",
+  "main": "js/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "node_modules/.bin/browserify js/main.js -o js/build.js"
+    "build": "browserify . -o js/build.js",
+    "serve": "open http://localhost:1442 && python -m SimpleHTTPServer 1442"
   },
   "repository": {
     "type": "git",
