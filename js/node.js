@@ -1,3 +1,4 @@
+var _ = require('underscore');
 var settings = require('./settings');
 
 const SPACING = settings.SPACING;

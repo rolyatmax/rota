@@ -145,7 +145,7 @@ class Stats {
             ctx.arc(x, y, RADIUS, 0, TWO_PI);
             ctx.fillStyle = getColor(address.count);
             ctx.fill();
-        })
+        });
     }
 }
 

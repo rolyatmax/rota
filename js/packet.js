@@ -10,7 +10,7 @@ const LATENCY_RANGE = settings.LATENCY_RANGE;
 const SCORE_RANGE = [20, 180];
 
 class Packet {
-    constructor(startNode, endNode, smartOpts={}) {
+    constructor(startNode, endNode, smartOpts = {}) {
         this.smart = !!smartOpts['version'];
         this.smartOpts = smartOpts;
         this.id = _.uniqueId('packet-');
@@ -60,7 +60,7 @@ class Packet {
         }
     }
     draw(ctx) {
-        var nextNode = this.curEdge ? this.curEdge.getOtherNode(this.curNode): this.curNode;
+        var nextNode = this.curEdge ? this.curEdge.getOtherNode(this.curNode) : this.curNode;
         var [curX, curY] = this.curNode.loc;
         var [nextX, nextY] = nextNode.loc;
         var latency = this.curEdge ? this.curEdge.latency : 1;
@@ -93,9 +93,6 @@ function easing(start, end, duration, curTime) {
     }
     curTime -= 2;
     return change / 2 * (curTime * curTime * curTime + 2) + start;
-
-    var change = end - start;
-    return change * curTime / duration + start;
 }
 
 // linear

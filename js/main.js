@@ -1,6 +1,4 @@
-var _ = require('underscore');
-
-require("babel/polyfill");
+require('babel/polyfill');
 
 var Sketch = require('./lib/sketch');
 var Network = require('./network');
@@ -11,14 +9,13 @@ var Info = require('./lib/info');
 
 const ROW_COLUMN_COUNT = 6;
 
-var info = new Info({
+new Info({
     url: 'README.md',
     keyTrigger: true,
     container: 'wrapper'
 });
 
 var network = new Network(ROW_COLUMN_COUNT * ROW_COLUMN_COUNT);
-network.connectAll();
 
 var sketch = Sketch.create({
     'fullscreen': false,
@@ -58,14 +55,14 @@ stats.push(stats1);
 var showOverlay = true;
 
 sketch.update = () => {
-    _.invoke(packets, 'update');
+    packets.forEach((packet) => packet.update());
 };
 
 sketch.draw = () => {
     network.draw(sketch);
-    _.invoke(packets, 'draw', sketch);
+    packets.forEach((packet) => packet.draw(sketch));
     if (showOverlay) {
-        _.invoke(stats, 'showAddressOverlay');
+        stats.forEach((stat) => stat.showAddressOverlay());
     }
 };
 
@@ -82,17 +79,14 @@ sketch.touchstart = () => {
     if (edge) {
         edge.toggleActive();
     }
-}
+};
 
 window.sketch = sketch;
 window.network = network;
-window._ = _;
 window.smart1 = smart1;
 // window.smart2 = smart2;
 
-var playing = false;
-
-_.each(packets, (collection, i) => {
+packets.forEach((collection, i) => {
     (() => {
         var selector = `.algo-${i}`;
         var coll = collection;
@@ -103,13 +97,13 @@ _.each(packets, (collection, i) => {
 });
 
 document.querySelector('.reset-stats').addEventListener('click', () => {
-    _.invoke(stats, 'resetStats');
+    stats.forEach((stat) => stat.resetStats());
 });
 
 var $popularAddressesBtn = document.querySelector('.get-popular-addresses');
 $popularAddressesBtn.addEventListener('click', () => {
     showOverlay = !showOverlay;
-    var method = showOverlay ? 'add': 'remove';
+    var method = showOverlay ? 'add' : 'remove';
     $popularAddressesBtn.classList[method]('on');
 });
 

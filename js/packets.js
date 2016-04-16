@@ -4,7 +4,7 @@ var Packet = require('./packet');
 const RATE = 10;
 
 class Packets {
-    constructor(network, smartOpts={}) {
+    constructor(network, smartOpts = {}) {
         this.network = network;
         this.inFlight = [];
         this.rate = RATE;
@@ -40,8 +40,9 @@ class Packets {
     draw(ctx) {
         _.invoke(this.inFlight, 'draw', ctx);
     }
-    addPackets(count=1, endNodeX, endNodeY, startNodeX, startNodeY) {
-        var endNode, startNode;
+    addPackets(count = 1, endNodeX, endNodeY, startNodeX, startNodeY) {
+        var endNode;
+        var startNode;
         if (endNodeX !== undefined && endNodeY !== undefined) {
             endNode = this.network.getNode(endNodeX, endNodeY);
         }

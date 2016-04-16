@@ -15,6 +15,7 @@ class Network {
         while (n--) {
             this.addNode();
         }
+        this.connectAll();
     }
     addNode() {
         var [x, y] = this.getVector();
@@ -85,10 +86,12 @@ class Network {
         _.each(this.nodes, (node) => {
             let {x, y} = node;
             var edges = node.getNeighbors();
-            [this.getNode(x + 1, y),
-             this.getNode(x - 1, y),
-             this.getNode(x, y + 1),
-             this.getNode(x, y - 1)].map((neighbor) => {
+            [
+                this.getNode(x + 1, y),
+                this.getNode(x - 1, y),
+                this.getNode(x, y + 1),
+                this.getNode(x, y - 1)
+            ].map((neighbor) => {
                 if (!neighbor || edges.indexOf(neighbor) >= 0) {
                     return;
                 }
@@ -104,7 +107,7 @@ class Network {
         _.invoke(this.nodes, 'draw', ctx);
         _.invoke(_.values(this.edges), 'draw', ctx);
         if (ctx.keys['SHIFT']) {
-            let nodes = network.findClosestNodes(ctx.mouse.x, ctx.mouse.y, 1)
+            let nodes = network.findClosestNodes(ctx.mouse.x, ctx.mouse.y, 1);
             if (nodes && nodes.length) {
                 let [x, y] = nodes[0].loc;
                 ctx.beginPath();

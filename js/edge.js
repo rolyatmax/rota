@@ -1,7 +1,6 @@
 var _ = require('underscore');
 var settings = require('./settings');
 
-const COLOR = 'rgba(0, 0, 0, 0.4)';
 const LATENCY_RANGE = settings.LATENCY_RANGE;
 
 class Edge {
@@ -39,7 +38,7 @@ class Edge {
             active = !this.active;
         }
 
-        var method = active ? 'addEdge': 'removeEdge';
+        var method = active ? 'addEdge' : 'removeEdge';
         _.invoke(this.nodes, method, this);
         this.active = active;
     }
