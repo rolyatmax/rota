@@ -26,9 +26,7 @@ class Node {
         this.edges.splice(i, 1);
     }
     getNeighbors() {
-        return this.edges.map((edge) => {
-            return edge.getOtherNode(this);
-        });
+        return this.edges.map((edge) => edge.getOtherNode(this));
     }
     selectEdge(smartOpts, smart, endNode) {
         if (!smart) {
@@ -48,23 +46,22 @@ class Node {
         var policyVersion = smartOpts['version'];
         _ensureDefaults(this.policy, policyVersion, endNode, this.edges, smartOpts['initial']);
         var validActions = this.getValidActions(policyVersion, endNode);
-        var maxAction = _.max(validActions, (action) => { return action['value']; });
+        var maxAction = _.max(validActions, (action) => action.value);
         return maxAction['value'];
     }
     getValidActions(policyVersion, endNode) {
-        return _.filter(this.policy[policyVersion][endNode.id], (action) => {
-            return _.contains(this.edges, action['edge']);
-        });
+        var actions = Object.values(this.policy[policyVersion][endNode.id]);
+        return actions.filter((action) => this.edges.includes(action.edge));
     }
     getEvaluationCb(smartOpts, endNode, edge) {
         var policyVersion = smartOpts['version'];
         var alpha = smartOpts['alpha'];
         var discount = smartOpts['discount'];
-        return function(reward, curMaxValue) {
+        return (reward, curMaxValue) => {
             var prevVal = this.policy[policyVersion][endNode.id][edge.id]['value'];
             var newVal = (1 - discount) * prevVal + alpha * (reward + discount * curMaxValue);
             this.policy[policyVersion][endNode.id][edge.id]['value'] = newVal;
-        }.bind(this);
+        };
     }
     draw(ctx) {
         var [x, y] = this.loc;

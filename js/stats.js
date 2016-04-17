@@ -1,11 +1,11 @@
 var _ = require('underscore');
+var template = require('./stats.hbs');
+var {max, min} = Math;
 
 const RENDER_RATE = 500;
 const RADIUS = 14;
 const MAX_OVERLAY_OPACITY = 0.6;
 const OVERLAY_COLOR = [253, 110, 0]; // orange
-
-var template = require('./stats.hbs');
 
 class Stats {
     constructor(el, packets, ctx) {
@@ -19,27 +19,24 @@ class Stats {
         this.poll();
     }
     poll() {
-        this.timeout = setTimeout(this.poll.bind(this), RENDER_RATE);
+        this.timeout = setTimeout(() => this.poll(), RENDER_RATE);
         this.render();
     }
     render() {
         var now = Date.now();
-        var inFlightAggregateTimes = _.reduce(this.packets.inFlight, (memo, packet) => {
-            return memo + (now - packet.startTime);
+        var inFlightAggregateTimes = this.packets.inFlight.reduce((total, packet) => {
+            return total + (now - packet.startTime);
         }, 0);
 
         var aggregateTimes = inFlightAggregateTimes + this.aggregateTimes;
-
         var ctx = {
             'total': this.totalCount,
             'inFlight': this.totalCount - this.completedCount,
             'delivered': this.completedCount,
             'averageTime': (aggregateTimes / this.totalCount) | 0,
-            'rate': this.packets.rate
+            'rate': this.packets.rate,
+            ...this.comparePaths()
         };
-
-        ctx = _.extend(ctx, this.comparePaths());
-
         this.statsContainer.innerHTML = template(ctx);
     }
     resetStats() {
@@ -73,43 +70,38 @@ class Stats {
     }
     comparePaths() {
         // average count of each path run
-        var pathCount = _.size(this.pathStats);
-        var totalCount = _.reduce(this.pathStats, (memo, pathStat) => {
-            return memo + pathStat['totalCount'];
-        }, 0);
+        var paths = Object.values(this.pathStats);
+
+        var pathCount = paths.length;
+        var totalCount = paths.reduce((total, pathStat) => total + pathStat.totalCount, 0);
         var averagePathCount = Math.round(totalCount / pathCount);
 
         // average best
-        var totalBest = _.reduce(this.pathStats, (memo, pathStat) => {
-            return memo + pathStat['bestTime'];
-        }, 0);
+        var totalBest = paths.reduce((total, pathStat) => total + pathStat.bestTime, 0);
         var averageBest = Math.round(totalBest / pathCount);
 
         // average worst
-        var totalWorst = _.reduce(this.pathStats, (memo, pathStat) => {
-            return memo + pathStat['worstTime'];
-        }, 0);
+        var totalWorst = paths.reduce((total, pathStat) => total + pathStat.worstTime, 0);
         var averageWorst = Math.round(totalWorst / pathCount);
 
         // average difference between best and actual
-        var totalBestActualDiff = _.reduce(this.pathStats, (memo, pathStat) => {
-            return memo + pathStat['averageTime'] - pathStat['bestTime'];
+        var totalBestActualDiff = paths.reduce((total, pathStat) => {
+            return total + pathStat.averageTime - pathStat.bestTime;
         }, 0);
         var averageBestActualDifference = Math.round(totalBestActualDiff / pathCount);
 
         // average difference between best and worst
-        var totalBestWorstDiff = _.reduce(this.pathStats, (memo, pathStat) => {
-            return memo + pathStat['worstTime'] - pathStat['bestTime'];
+        var totalBestWorstDiff = paths.reduce((memo, pathStat) => {
+            return memo + pathStat.worstTime - pathStat.bestTime;
         }, 0);
         var averageBestWorstDifference = Math.round(totalBestWorstDiff / pathCount);
 
         // average difference between best and average
-        var totalBestActualDiffRatio = _.reduce(this.pathStats, (memo, pathStat) => {
-            return memo + pathStat['averageTime'] / pathStat['bestTime'];
+        var totalBestActualDiffRatio = paths.reduce((memo, pathStat) => {
+            return memo + pathStat.averageTime / pathStat.bestTime;
         }, 0);
         var averageBestActualRatio = (((totalBestActualDiffRatio / pathCount) * 100) | 0) / 100;
-
-        var data = {
+        return {
             pathCount,
             averagePathCount,
             averageBest,
@@ -118,28 +110,21 @@ class Stats {
             averageBestActualRatio,
             averageBestWorstDifference
         };
-
-        // console.log('Stats!');
-        // console.log(_.map(data, (val, key) => `${key}: ${val}`).join('\n'));
-
-        return data;
     }
     showAddressOverlay() {
         if (!this.packets.inFlight.length) {
             return;
         }
-        var endNodes = _.pluck(this.packets.inFlight, 'endNode');
+        var endNodes = this.packets.inFlight.map((packet) => packet.endNode);
         var groups = _.groupBy(endNodes, 'id');
-        var addresses = _.map(groups, (group) => {
-            return {
-                'node': group[0],
-                'count': group.length
-            };
-        });
+        var addresses = Object.values(groups).map((group) => ({
+            'node': group[0],
+            'count': group.length
+        }));
         this.draw(this.ctx, addresses);
     }
     draw(ctx, addresses) {
-        _.each(addresses, (address) => {
+        addresses.forEach((address) => {
             var [x, y] = address.node.loc;
             ctx.beginPath();
             ctx.arc(x, y, RADIUS, 0, TWO_PI);

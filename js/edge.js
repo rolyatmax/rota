@@ -39,7 +39,7 @@ class Edge {
         }
 
         var method = active ? 'addEdge' : 'removeEdge';
-        _.invoke(this.nodes, method, this);
+        this.nodes.forEach((node) => node[method](this));
         this.active = active;
     }
 }

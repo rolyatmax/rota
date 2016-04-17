@@ -9,11 +9,12 @@ class Packets {
         this.inFlight = [];
         this.rate = RATE;
         this.timeout = null;
-        this.smart = !!_.size(smartOpts);
+        this.smart = !!Object.keys(smartOpts).length;
         if (this.smart) {
-            this.smartOpts = _.extend(smartOpts, {
+            this.smartOpts = {
+                ...smartOpts,
                 'version': _.uniqueId('policy')
-            });
+            };
         }
     }
     setStats(stats) {
@@ -30,15 +31,13 @@ class Packets {
         this.addPackets(this.rate);
     }
     update() {
-        _.invoke(this.inFlight, 'update');
-        var completed = _.filter(this.inFlight, (packet) => {
-            return !!packet.totalTime;
-        });
-        _.each(completed, this.stats.logFinish.bind(this.stats));
+        this.inFlight.forEach((packet) => packet.update());
+        var completed = this.inFlight.filter((packet) => !!packet.totalTime);
+        completed.forEach((packet) => this.stats.logFinish(packet));
         this.inFlight = _.difference(this.inFlight, completed);
     }
     draw(ctx) {
-        _.invoke(this.inFlight, 'draw', ctx);
+        this.inFlight.forEach((packet) => packet.draw(ctx));
     }
     addPackets(count = 1, endNodeX, endNodeY, startNodeX, startNodeY) {
         var endNode;
@@ -52,8 +51,8 @@ class Packets {
 
         while (count--) {
             this.stats.totalCount += 1;
-            var _startNode = startNode || _.sample(_.values(this.network.nodes));
-            var _endNode = endNode || _.sample(_.values(this.network.nodes));
+            var _startNode = startNode || _.sample(Object.values(this.network.nodes));
+            var _endNode = endNode || _.sample(Object.values(this.network.nodes));
             this.inFlight.push(new Packet(_startNode, _endNode, this.smartOpts));
         }
     }

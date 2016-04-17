@@ -50,7 +50,7 @@ class Packet {
             return;
         }
         if (this.evaluationCb) {
-            let score = -1 * (map(this.curEdge.latency, LATENCY_RANGE[0], LATENCY_RANGE[1], ...SCORE_RANGE));
+            let score = -1 * (map(this.curEdge.latency, ...LATENCY_RANGE, ...SCORE_RANGE));
             this.evaluationCb(score, this.curNode.getMaxActionValue(this.smartOpts, this.endNode));
         }
         this.curEdgeStart = now;
@@ -94,11 +94,5 @@ function easing(start, end, duration, curTime) {
     curTime -= 2;
     return change / 2 * (curTime * curTime * curTime + 2) + start;
 }
-
-// linear
-// function easing(start, end, duration, curTime) {
-//     var change = end - start;
-//     return change * curTime / duration + start;
-// }
 
 module.exports = Packet;

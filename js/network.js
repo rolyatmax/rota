@@ -23,8 +23,9 @@ class Network {
         this.nodes[node.id] = node;
     }
     getVector() {
-        if (_.size(this.nodes) >= Math.pow(this.width, 2)) {
-            throw new Error('Too many nodes: ' + _.size(this.nodes));
+        var nodesCount = Object.keys(this.nodes).length;
+        if (nodesCount >= Math.pow(this.width, 2)) {
+            throw new Error(`Too many nodes: ${nodesCount}`);
         }
         var x = _.random(this.width - 1);
         var y = _.random(this.width - 1);
@@ -44,27 +45,21 @@ class Network {
         return edge;
     }
     findClosestNodes(touchX, touchY, nodeCount) {
-        var normalized = _.map([touchX, touchY], (num) => {
-            return (num / SPACING) - 1;
+        var normalized = [touchX, touchY].map((num) => (num / SPACING) - 1);
+        var [minMaxX, minMaxY] = normalized.map((num) => {
+            return [Math.floor, Math.ceil].map((fn) => fn(num));
         });
 
-        var [minMaxX, minMaxY] = _.map(normalized, (num) => {
-            return _.map([Math.floor, Math.ceil], (fn) => fn(num));
-        });
-
-        var possibleVectors = [[minMaxX[0], minMaxY[0]],
-                               [minMaxX[0], minMaxY[1]],
-                               [minMaxX[1], minMaxY[0]],
-                               [minMaxX[1], minMaxY[1]]];
-        possibleVectors = _.filter(possibleVectors, (vector) => {
-            return vector[0] >= 0 && vector[1] >= 0;
-        });
-
+        var possibleVectors = [
+            [minMaxX[0], minMaxY[0]],
+            [minMaxX[0], minMaxY[1]],
+            [minMaxX[1], minMaxY[0]],
+            [minMaxX[1], minMaxY[1]]
+        ];
+        possibleVectors = possibleVectors.filter((vector) => vector[0] >= 0 && vector[1] >= 0);
         var [normalX, normalY] = normalized;
-
-        var closest = _.map(_.range(nodeCount), () => {
-            var vector = _.min(possibleVectors, (vector) => {
-                var [x, y] = vector;
+        var closest = _.range(nodeCount).map(() => {
+            var vector = _.min(possibleVectors, ([x, y]) => {
                 return sqrt(pow(x - normalX, 2) + pow(y - normalY, 2));
             });
             var i = possibleVectors.indexOf(vector);
@@ -72,7 +67,7 @@ class Network {
             return this.getNode(...vector);
         });
 
-        if (!_.every(closest)) {
+        if (!closest.every(node => node)) {
             return console.log('Missing nodes', closest);
         }
 
@@ -83,7 +78,7 @@ class Network {
         return closest ? this.getEdge(...closest) : null;
     }
     connectAll() {
-        _.each(this.nodes, (node) => {
+        Object.values(this.nodes).forEach((node) => {
             let {x, y} = node;
             var edges = node.getNeighbors();
             [
@@ -104,8 +99,8 @@ class Network {
         });
     }
     draw(ctx) {
-        _.invoke(this.nodes, 'draw', ctx);
-        _.invoke(_.values(this.edges), 'draw', ctx);
+        Object.values(this.nodes).forEach((node) => node.draw(ctx));
+        Object.values(this.edges).forEach((edge) => edge.draw(ctx));
         if (ctx.keys['SHIFT']) {
             let nodes = network.findClosestNodes(ctx.mouse.x, ctx.mouse.y, 1);
             if (nodes && nodes.length) {
@@ -120,14 +115,14 @@ class Network {
 }
 
 function key(x, y) {
-    return x + '|' + y;
+    return `${x}|${y}`;
 }
 
 // deterministic way to generate ids based on a 2-node combo
 function generatePathID(node1, node2) {
     var id1 = node1.id;
     var id2 = node2.id;
-    return id1 < id2 ? id1 + '-' + id2 : id2 + '-' + id1;
+    return id1 < id2 ? `${id1}-${id2}` : `${id2}-${id1}`;
 }
 
 module.exports = Network;
