@@ -1,5 +1,6 @@
 var _ = require('underscore');
 var settings = require('./settings');
+var {TWO_PI} = require('./helpers');
 
 const SPACING = settings.SPACING;
 const RADIUS = 4;

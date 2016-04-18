@@ -1,5 +1,6 @@
 var _ = require('underscore');
 var settings = require('./settings');
+var {map, TWO_PI, lerp} = require('./helpers');
 
 const REDZONE_TIME = settings.REDZONE_TIME;
 const GREEN = [39, 179, 171];
@@ -29,7 +30,11 @@ class Packet {
             this.curEdgeStart = now;
             this.curEdge = this.curNode.selectEdge(this.smartOpts, this.smart, this.endNode);
             if (this.smart && this.curEdge) {
-                this.evaluationCb = this.curNode.getEvaluationCb(this.smartOpts, this.endNode, this.curEdge);
+                this.evaluationCb = this.curNode.getEvaluationCb(
+                    this.smartOpts,
+                    this.endNode,
+                    this.curEdge
+                );
             }
             return;
         }
@@ -44,7 +49,8 @@ class Packet {
         if (this.curNode === this.endNode) {
             if (this.evaluationCb) {
                 let completionReward = this.smartOpts['completionReward'];
-                this.evaluationCb(completionReward, this.curNode.getMaxActionValue(this.smartOpts, this.endNode));
+                let maxActionValue = this.curNode.getMaxActionValue(this.smartOpts, this.endNode);
+                this.evaluationCb(completionReward, maxActionValue);
             }
             this.totalTime = now - this.startTime;
             return;
@@ -56,7 +62,11 @@ class Packet {
         this.curEdgeStart = now;
         this.curEdge = this.curNode.selectEdge(this.smartOpts, this.smart, this.endNode);
         if (this.smart && this.curEdge) {
-            this.evaluationCb = this.curNode.getEvaluationCb(this.smartOpts, this.endNode, this.curEdge);
+            this.evaluationCb = this.curNode.getEvaluationCb(
+                this.smartOpts,
+                this.endNode,
+                this.curEdge
+            );
         }
     }
     draw(ctx) {

@@ -2,6 +2,7 @@ var _ = require('underscore');
 var Node = require('./node');
 var Edge = require('./edge');
 var settings = require('./settings');
+var {sqrt, pow, TWO_PI} = require('./helpers');
 
 const SPACING = settings.SPACING;
 const RADIUS = 12;
@@ -102,7 +103,7 @@ class Network {
         Object.values(this.nodes).forEach((node) => node.draw(ctx));
         Object.values(this.edges).forEach((edge) => edge.draw(ctx));
         if (ctx.keys['SHIFT']) {
-            let nodes = network.findClosestNodes(ctx.mouse.x, ctx.mouse.y, 1);
+            let nodes = this.findClosestNodes(ctx.mouse.x, ctx.mouse.y, 1);
             if (nodes && nodes.length) {
                 let [x, y] = nodes[0].loc;
                 ctx.beginPath();

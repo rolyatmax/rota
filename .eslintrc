@@ -65,6 +65,7 @@
 
   "globals": {
     "module": true,
-    "require": true
+    "require": true,
+    "Set": true
   }
 }

@@ -1,6 +1,7 @@
 var _ = require('underscore');
 var template = require('./stats.hbs');
 var {max, min} = Math;
+var {TWO_PI} = require('./helpers');
 
 const RENDER_RATE = 500;
 const RADIUS = 14;

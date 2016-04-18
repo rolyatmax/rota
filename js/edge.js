@@ -1,5 +1,6 @@
 var _ = require('underscore');
 var settings = require('./settings');
+var {map} = require('./helpers');
 
 const LATENCY_RANGE = settings.LATENCY_RANGE;
 
@@ -47,7 +48,7 @@ class Edge {
 function getColor(latency) {
     var [minA, maxA] = LATENCY_RANGE;
     var opacity = (((map(-latency, -maxA, -minA, 0.2, 0.9)) * 1000) | 0) / 1000;
-    return 'rgba(0, 0, 0, ' + opacity + ')';
+    return `rgba(0, 0, 0, ${opacity})`;
 }
 
 module.exports = Edge;
