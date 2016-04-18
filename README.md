@@ -19,10 +19,8 @@ There are a number of improvements I hope to make which haven't made their way i
 
 # Requirements
 
-To run this project yourself, just clone the repo and run from the root:
+To simplify deploys, we check in built JS assets. So to run this project yourself, just clone the repo and run from the root:
 
-    npm install
-    npm run build
     npm run serve
 
 ------------------------
