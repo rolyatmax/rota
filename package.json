@@ -4,10 +4,10 @@
   "description": "Routing with reinforcement learning",
   "main": "js/main.js",
   "scripts": {
-    "build": "browserify . -o js/build.js",
-    "watch": "watchify . --full-paths -o js/build.js -dv",
+    "build": "mkdir -p build && browserify . -o build/build.js",
+    "watch": "mkdir -p build && watchify . --full-paths -o build/build.js -dv",
     "serve": "open http://localhost:1442 && python -m SimpleHTTPServer 1442",
-    "lint": "eslint ."
+    "lint": "eslint js"
   },
   "repository": {
     "type": "git",
