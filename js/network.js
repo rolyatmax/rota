@@ -10,30 +10,18 @@ const COLOR = 'rgba(96, 57, 193, 0.5)'; // purple
 
 class Network {
     constructor(n) {
-        this.width = this.height = Math.ceil(Math.sqrt(n));
+        this.width = this.height = n;
         this.nodes = {};
         this.edges = {};
-        while (n--) {
-            this.addNode();
+        var x = this.width;
+        while (x--) {
+            var y = this.height;
+            while (y--) {
+                var node = new Node(x, y);
+                this.nodes[node.id] = node;
+            }
         }
         this.connectAll();
-    }
-    addNode() {
-        var [x, y] = this.getVector();
-        var node = new Node(x, y);
-        this.nodes[node.id] = node;
-    }
-    getVector() {
-        var nodesCount = Object.keys(this.nodes).length;
-        if (nodesCount >= Math.pow(this.width, 2)) {
-            throw new Error(`Too many nodes: ${nodesCount}`);
-        }
-        var x = _.random(this.width - 1);
-        var y = _.random(this.width - 1);
-        if (this.getNode(x, y)) {
-            return this.getVector();
-        }
-        return [x, y];
     }
     getNode(x, y) {
         return this.nodes[key(x, y)];

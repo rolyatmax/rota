@@ -15,7 +15,7 @@ new Info({
     container: 'wrapper'
 });
 
-var network = new Network(ROW_COLUMN_COUNT * ROW_COLUMN_COUNT);
+var network = new Network(ROW_COLUMN_COUNT);
 
 var sketch = Sketch.create({
     'fullscreen': false,
