@@ -97,6 +97,12 @@ packets.forEach((collection, i) => {
     })();
 });
 
+function loop() {
+    setTimeout(loop, 100);
+    packets.forEach((collection) => collection.addPackets(10));
+}
+// loop();
+
 document.querySelector('.reset-stats').addEventListener('click', () => {
     stats.forEach((stat) => stat.resetStats());
 });

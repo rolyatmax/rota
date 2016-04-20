@@ -51,6 +51,7 @@ class Packets {
 
         while (count--) {
             this.stats.totalCount += 1;
+            this.stats.allTimeTotal += 1;
             var _startNode = startNode || _.sample(Object.values(this.network.nodes));
             var _endNode = endNode || _.sample(Object.values(this.network.nodes));
             this.inFlight.push(new Packet(_startNode, _endNode, this.smartOpts));

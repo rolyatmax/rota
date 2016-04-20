@@ -17,6 +17,8 @@ class Stats {
         this.timeout = null;
         this.showOverlay = false;
         this.resetStats();
+        this.allTimeTotal = 0;
+        this.allTimeCompleted = 0;
         this.poll();
     }
     poll() {
@@ -32,7 +34,7 @@ class Stats {
         var aggregateTimes = inFlightAggregateTimes + this.aggregateTimes;
         var ctx = {
             'total': this.totalCount,
-            'inFlight': this.totalCount - this.completedCount,
+            'inFlight': this.allTimeTotal - this.allTimeCompleted,
             'delivered': this.completedCount,
             'averageTime': (aggregateTimes / this.totalCount) | 0,
             'rate': this.packets.rate,
@@ -50,6 +52,7 @@ class Stats {
     }
     logFinish(packet) {
         this.completedCount += 1;
+        this.allTimeCompleted += 1;
         this.aggregateTimes += packet.totalTime;
         this.finished.add(packet);
 
