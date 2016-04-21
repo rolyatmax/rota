@@ -1,10 +1,9 @@
-var _ = require('underscore');
+var {range, min} = require('underscore');
 var Node = require('./node');
 var Edge = require('./edge');
-var settings = require('./settings');
+var {SPACING} = require('./settings');
 var {sqrt, pow, TWO_PI} = require('./helpers');
 
-const SPACING = settings.SPACING;
 const RADIUS = 12;
 const COLOR = 'rgba(96, 57, 193, 0.5)'; // purple
 
@@ -47,8 +46,8 @@ class Network {
         ];
         possibleVectors = possibleVectors.filter((vector) => vector[0] >= 0 && vector[1] >= 0);
         var [normalX, normalY] = normalized;
-        var closest = _.range(nodeCount).map(() => {
-            var vector = _.min(possibleVectors, ([x, y]) => {
+        var closest = range(nodeCount).map(() => {
+            var vector = min(possibleVectors, ([x, y]) => {
                 return sqrt(pow(x - normalX, 2) + pow(y - normalY, 2));
             });
             var i = possibleVectors.indexOf(vector);

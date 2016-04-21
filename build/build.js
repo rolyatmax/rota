@@ -9,15 +9,17 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var _ = require('underscore');
-var settings = require('./settings');
+var _require = require('underscore');
 
-var _require = require('./helpers');
+var random = _require.random;
 
-var map = _require.map;
+var _require2 = require('./settings');
 
+var LATENCY_RANGE = _require2.LATENCY_RANGE;
 
-var LATENCY_RANGE = settings.LATENCY_RANGE;
+var _require3 = require('./helpers');
+
+var map = _require3.map;
 
 var Edge = function () {
     function Edge(node1, node2, id) {
@@ -25,7 +27,7 @@ var Edge = function () {
 
         this.id = id;
         this.nodes = [node1, node2];
-        this.latency = _.random.apply(_, _toConsumableArray(LATENCY_RANGE));
+        this.latency = random.apply(undefined, _toConsumableArray(LATENCY_RANGE));
         this.active = true;
     }
 
@@ -820,19 +822,25 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var _ = require('underscore');
+var _require = require('underscore');
+
+var range = _require.range;
+var min = _require.min;
+
 var Node = require('./node');
 var Edge = require('./edge');
-var settings = require('./settings');
 
-var _require = require('./helpers');
+var _require2 = require('./settings');
 
-var sqrt = _require.sqrt;
-var pow = _require.pow;
-var TWO_PI = _require.TWO_PI;
+var SPACING = _require2.SPACING;
+
+var _require3 = require('./helpers');
+
+var sqrt = _require3.sqrt;
+var pow = _require3.pow;
+var TWO_PI = _require3.TWO_PI;
 
 
-var SPACING = settings.SPACING;
 var RADIUS = 12;
 var COLOR = 'rgba(96, 57, 193, 0.5)'; // purple
 
@@ -899,8 +907,8 @@ var Network = function () {
             var normalX = _normalized[0];
             var normalY = _normalized[1];
 
-            var closest = _.range(nodeCount).map(function () {
-                var vector = _.min(possibleVectors, function (_ref) {
+            var closest = range(nodeCount).map(function () {
+                var vector = min(possibleVectors, function (_ref) {
                     var _ref2 = _slicedToArray(_ref, 2);
 
                     var x = _ref2[0];
@@ -1000,15 +1008,21 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var _ = require('underscore');
-var settings = require('./settings');
+var _require = require('underscore');
 
-var _require = require('./helpers');
+var sample = _require.sample;
+var where = _require.where;
+var max = _require.max;
 
-var TWO_PI = _require.TWO_PI;
+var _require2 = require('./settings');
+
+var SPACING = _require2.SPACING;
+
+var _require3 = require('./helpers');
+
+var TWO_PI = _require3.TWO_PI;
 
 
-var SPACING = settings.SPACING;
 var RADIUS = 4;
 var COLOR = 'rgba(0, 0, 0, 0.5)';
 
@@ -1052,16 +1066,16 @@ var Node = function () {
         key: 'selectEdge',
         value: function selectEdge(smartOpts, smart, endNode) {
             if (!smart) {
-                return _.sample(this.edges);
+                return sample(this.edges);
             }
             var policyVersion = smartOpts['version'];
             _ensureDefaults(this.policy, policyVersion, endNode, this.edges, smartOpts['initial']);
             var validActions = this.getValidActions(policyVersion, endNode);
             if (Math.random() > smartOpts['explore']) {
                 var maxValue = this.getMaxActionValue(smartOpts, endNode);
-                validActions = _.where(validActions, { 'value': maxValue });
+                validActions = where(validActions, { 'value': maxValue });
             }
-            var action = _.sample(validActions);
+            var action = sample(validActions);
             return action && action['edge'];
         }
     }, {
@@ -1070,7 +1084,7 @@ var Node = function () {
             var policyVersion = smartOpts['version'];
             _ensureDefaults(this.policy, policyVersion, endNode, this.edges, smartOpts['initial']);
             var validActions = this.getValidActions(policyVersion, endNode);
-            var maxAction = _.max(validActions, function (action) {
+            var maxAction = max(validActions, function (action) {
                 return action.value;
             });
             return maxAction['value'];
@@ -1146,22 +1160,26 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var _ = require('underscore');
-var settings = require('./settings');
+var _require = require('underscore');
 
-var _require = require('./helpers');
+var uniqueId = _require.uniqueId;
 
-var map = _require.map;
-var TWO_PI = _require.TWO_PI;
-var lerp = _require.lerp;
+var _require2 = require('./settings');
+
+var REDZONE_TIME = _require2.REDZONE_TIME;
+var LATENCY_RANGE = _require2.LATENCY_RANGE;
+
+var _require3 = require('./helpers');
+
+var map = _require3.map;
+var TWO_PI = _require3.TWO_PI;
+var lerp = _require3.lerp;
 
 
-var REDZONE_TIME = settings.REDZONE_TIME;
 var GREEN = [39, 179, 171];
 var RED = [167, 29, 36];
 var OPACITY = 0.7;
 var RADIUS = 6;
-var LATENCY_RANGE = settings.LATENCY_RANGE;
 var SCORE_RANGE = [20, 180];
 
 var Packet = function () {
@@ -1172,7 +1190,7 @@ var Packet = function () {
 
         this.smart = !!smartOpts['version'];
         this.smartOpts = smartOpts;
-        this.id = _.uniqueId('packet-');
+        this.id = uniqueId('packet-');
         this.startNode = startNode;
         this.endNode = endNode;
         this.startTime = Date.now();
@@ -1256,15 +1274,15 @@ var Packet = function () {
 function getColor(time) {
     var perc = time / REDZONE_TIME;
 
-    var _$map = _.map([0, 1, 2], function (i) {
+    var _map = [0, 1, 2].map(function (i) {
         return lerp(GREEN[i], RED[i], perc) | 0;
     });
 
-    var _$map2 = _slicedToArray(_$map, 3);
+    var _map2 = _slicedToArray(_map, 3);
 
-    var r = _$map2[0];
-    var g = _$map2[1];
-    var b = _$map2[2];
+    var r = _map2[0];
+    var g = _map2[1];
+    var b = _map2[2];
 
     return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + OPACITY + ')';
 }
@@ -1294,7 +1312,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var _ = require('underscore');
 var Packet = require('./packet');
 
-var RATE = 10;
+var RATE = 150;
 
 var Packets = function () {
     function Packets(network) {
@@ -1332,8 +1350,8 @@ var Packets = function () {
     }, {
         key: 'pollAddPackets',
         value: function pollAddPackets() {
-            this.timeout = setTimeout(this.pollAddPackets.bind(this), 1000);
-            this.addPackets(this.rate);
+            this.timeout = setTimeout(this.pollAddPackets.bind(this), 100);
+            this.addPackets(this.rate / 10 | 0);
         }
     }, {
         key: 'update',
@@ -1378,6 +1396,7 @@ var Packets = function () {
 
             while (count--) {
                 this.stats.totalCount += 1;
+                this.stats.allTimeTotal += 1;
                 var _startNode = startNode || _.sample(Object.values(this.network.nodes));
                 var _endNode = endNode || _.sample(Object.values(this.network.nodes));
                 this.inFlight.push(new Packet(_startNode, _endNode, this.smartOpts));
@@ -1394,16 +1413,17 @@ module.exports = Packets;
 "use strict";
 
 var SPACING = 60;
-var SPEED = 1;
-var LATENCY_RANGE = [20, 180];
+var SPEED = 3;
+var LATENCY_RANGE = [20, 180].map(function (num) {
+    return num * SPEED;
+});
 var REDZONE_TIME = 40 * (LATENCY_RANGE[0] + LATENCY_RANGE[1]) / 2;
 
 var settings = {
-    LATENCY_RANGE: LATENCY_RANGE.map(function (num) {
-        return num * SPEED;
-    }),
+    LATENCY_RANGE: LATENCY_RANGE,
     REDZONE_TIME: REDZONE_TIME,
-    SPACING: SPACING
+    SPACING: SPACING,
+    SPEED: SPEED
 };
 
 module.exports = settings;
@@ -1447,14 +1467,17 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var _ = require('underscore');
+var _require = require('underscore');
+
+var groupBy = _require.groupBy;
+
 var template = require('./stats.hbs');
 var max = Math.max;
 var min = Math.min;
 
-var _require = require('./helpers');
+var _require2 = require('./helpers');
 
-var TWO_PI = _require.TWO_PI;
+var TWO_PI = _require2.TWO_PI;
 
 
 var RENDER_RATE = 500;
@@ -1473,6 +1496,8 @@ var Stats = function () {
         this.timeout = null;
         this.showOverlay = false;
         this.resetStats();
+        this.allTimeTotal = 0;
+        this.allTimeCompleted = 0;
         this.poll();
     }
 
@@ -1497,7 +1522,7 @@ var Stats = function () {
             var aggregateTimes = inFlightAggregateTimes + this.aggregateTimes;
             var ctx = _extends({
                 'total': this.totalCount,
-                'inFlight': this.totalCount - this.completedCount,
+                'inFlight': this.allTimeTotal - this.allTimeCompleted,
                 'delivered': this.completedCount,
                 'averageTime': aggregateTimes / this.totalCount | 0,
                 'rate': this.packets.rate
@@ -1518,6 +1543,7 @@ var Stats = function () {
         key: 'logFinish',
         value: function logFinish(packet) {
             this.completedCount += 1;
+            this.allTimeCompleted += 1;
             this.aggregateTimes += packet.totalTime;
             this.finished.add(packet);
 
@@ -1599,7 +1625,7 @@ var Stats = function () {
             var endNodes = this.packets.inFlight.map(function (packet) {
                 return packet.endNode;
             });
-            var groups = _.groupBy(endNodes, 'id');
+            var groups = groupBy(endNodes, 'id');
             var addresses = Object.values(groups).map(function (group) {
                 return {
                     'node': group[0],
@@ -14889,18 +14915,7 @@ var stats1 = new Stats('.algo-0', smart1, sketch);
 smart1.setStats(stats1);
 packets.push(smart1);
 stats.push(stats1);
-
-// var smart2 = new Packets(network, {
-//     'explore': 0.05,
-//     'alpha': 0.9,
-//     'discount': 0.8,
-//     'initial': 200,
-//     'completionReward': 2000
-// });
-// var stats2 = new Stats('.algo-2', smart2, sketch);
-// smart2.setStats(stats2);
-// packets.push(smart2);
-// stats.push(stats2);
+// smart1.start();
 
 var showOverlay = true;
 
@@ -14943,7 +14958,6 @@ sketch.touchstart = function () {
 window.sketch = sketch;
 window.network = network;
 window.smart1 = smart1;
-// window.smart2 = smart2;
 
 packets.forEach(function (collection, i) {
     (function () {

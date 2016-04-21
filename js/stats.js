@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var {groupBy} = require('underscore');
 var template = require('./stats.hbs');
 var {max, min} = Math;
 var {TWO_PI} = require('./helpers');
@@ -120,7 +120,7 @@ class Stats {
             return;
         }
         var endNodes = this.packets.inFlight.map((packet) => packet.endNode);
-        var groups = _.groupBy(endNodes, 'id');
+        var groups = groupBy(endNodes, 'id');
         var addresses = Object.values(groups).map((group) => ({
             'node': group[0],
             'count': group.length

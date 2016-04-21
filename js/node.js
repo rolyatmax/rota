@@ -1,8 +1,7 @@
-var _ = require('underscore');
-var settings = require('./settings');
+var {sample, where, max} = require('underscore');
+var {SPACING} = require('./settings');
 var {TWO_PI} = require('./helpers');
 
-const SPACING = settings.SPACING;
 const RADIUS = 4;
 const COLOR = 'rgba(0, 0, 0, 0.5)';
 
@@ -31,23 +30,23 @@ class Node {
     }
     selectEdge(smartOpts, smart, endNode) {
         if (!smart) {
-            return _.sample(this.edges);
+            return sample(this.edges);
         }
         var policyVersion = smartOpts['version'];
         _ensureDefaults(this.policy, policyVersion, endNode, this.edges, smartOpts['initial']);
         var validActions = this.getValidActions(policyVersion, endNode);
         if (Math.random() > smartOpts['explore']) {
             let maxValue = this.getMaxActionValue(smartOpts, endNode);
-            validActions = _.where(validActions, {'value': maxValue});
+            validActions = where(validActions, {'value': maxValue});
         }
-        var action = _.sample(validActions);
+        var action = sample(validActions);
         return action && action['edge'];
     }
     getMaxActionValue(smartOpts, endNode) {
         var policyVersion = smartOpts['version'];
         _ensureDefaults(this.policy, policyVersion, endNode, this.edges, smartOpts['initial']);
         var validActions = this.getValidActions(policyVersion, endNode);
-        var maxAction = _.max(validActions, (action) => action.value);
+        var maxAction = max(validActions, (action) => action.value);
         return maxAction['value'];
     }
     getValidActions(policyVersion, endNode) {

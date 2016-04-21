@@ -40,18 +40,7 @@ var stats1 = new Stats('.algo-0', smart1, sketch);
 smart1.setStats(stats1);
 packets.push(smart1);
 stats.push(stats1);
-
-// var smart2 = new Packets(network, {
-//     'explore': 0.05,
-//     'alpha': 0.9,
-//     'discount': 0.8,
-//     'initial': 200,
-//     'completionReward': 2000
-// });
-// var stats2 = new Stats('.algo-2', smart2, sketch);
-// smart2.setStats(stats2);
-// packets.push(smart2);
-// stats.push(stats2);
+// smart1.start();
 
 var showOverlay = true;
 
@@ -85,7 +74,6 @@ sketch.touchstart = () => {
 window.sketch = sketch;
 window.network = network;
 window.smart1 = smart1;
-// window.smart2 = smart2;
 
 packets.forEach((collection, i) => {
     (() => {
@@ -96,12 +84,6 @@ packets.forEach((collection, i) => {
         });
     })();
 });
-
-function loop() {
-    setTimeout(loop, 100);
-    packets.forEach((collection) => collection.addPackets(10));
-}
-// loop();
 
 document.querySelector('.reset-stats').addEventListener('click', () => {
     stats.forEach((stat) => stat.resetStats());

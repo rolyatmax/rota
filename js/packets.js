@@ -1,7 +1,7 @@
 var _ = require('underscore');
 var Packet = require('./packet');
 
-const RATE = 10;
+const RATE = 150;
 
 class Packets {
     constructor(network, smartOpts = {}) {
@@ -27,8 +27,8 @@ class Packets {
         clearTimeout(this.timeout);
     }
     pollAddPackets() {
-        this.timeout = setTimeout(this.pollAddPackets.bind(this), 1000);
-        this.addPackets(this.rate);
+        this.timeout = setTimeout(this.pollAddPackets.bind(this), 100);
+        this.addPackets((this.rate / 10) | 0);
     }
     update() {
         this.inFlight.forEach((packet) => packet.update());

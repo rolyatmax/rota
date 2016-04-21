@@ -1,14 +1,12 @@
-var _ = require('underscore');
-var settings = require('./settings');
+var {random} = require('underscore');
+var {LATENCY_RANGE} = require('./settings');
 var {map} = require('./helpers');
-
-const LATENCY_RANGE = settings.LATENCY_RANGE;
 
 class Edge {
     constructor(node1, node2, id) {
         this.id = id;
         this.nodes = [node1, node2];
-        this.latency = _.random(...LATENCY_RANGE);
+        this.latency = random(...LATENCY_RANGE);
         this.active = true;
     }
     getOtherNode(node) {

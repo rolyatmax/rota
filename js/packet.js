@@ -1,20 +1,18 @@
-var _ = require('underscore');
-var settings = require('./settings');
+var {uniqueId} = require('underscore');
+var {REDZONE_TIME, LATENCY_RANGE} = require('./settings');
 var {map, TWO_PI, lerp} = require('./helpers');
 
-const REDZONE_TIME = settings.REDZONE_TIME;
 const GREEN = [39, 179, 171];
 const RED = [167, 29, 36];
 const OPACITY = 0.7;
 const RADIUS = 6;
-const LATENCY_RANGE = settings.LATENCY_RANGE;
 const SCORE_RANGE = [20, 180];
 
 class Packet {
     constructor(startNode, endNode, smartOpts = {}) {
         this.smart = !!smartOpts['version'];
         this.smartOpts = smartOpts;
-        this.id = _.uniqueId('packet-');
+        this.id = uniqueId('packet-');
         this.startNode = startNode;
         this.endNode = endNode;
         this.startTime = Date.now();
@@ -88,9 +86,7 @@ class Packet {
 
 function getColor(time) {
     var perc = time / REDZONE_TIME;
-    var [r, g, b] = _.map([0, 1, 2], (i) => {
-        return lerp(GREEN[i], RED[i], perc) | 0;
-    });
+    var [r, g, b] = [0, 1, 2].map((i) => lerp(GREEN[i], RED[i], perc) | 0);
     return `rgba(${r}, ${g}, ${b}, ${OPACITY})`;
 }
 
