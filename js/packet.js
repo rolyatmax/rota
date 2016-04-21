@@ -22,6 +22,7 @@ class Packet {
         this.curEdgeStart = 0;
         this.evaluationCb = null;
     }
+    // TODO: Refactor meeeeeeee
     update() {
         var now = Date.now();
         if (!this.curEdgeStart) {

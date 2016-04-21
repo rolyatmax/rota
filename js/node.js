@@ -12,7 +12,6 @@ class Node {
         this.id = key(x, y);
         this.loc = [(x + 1) * SPACING, (y + 1) * SPACING];
         this.edges = [];
-
         this.policy = {};
     }
     addEdge(edge) {
@@ -32,10 +31,10 @@ class Node {
         if (!smart) {
             return sample(this.edges);
         }
-        var policyVersion = smartOpts['version'];
-        _ensureDefaults(this.policy, policyVersion, endNode, this.edges, smartOpts['initial']);
-        var validActions = this.getValidActions(policyVersion, endNode);
-        if (Math.random() > smartOpts['explore']) {
+        var {version, initial, explore} = smartOpts;
+        _ensureDefaults(this.policy, version, endNode, this.edges, initial);
+        var validActions = this.getValidActions(version, endNode);
+        if (Math.random() > explore) {
             let maxValue = this.getMaxActionValue(smartOpts, endNode);
             validActions = where(validActions, {'value': maxValue});
         }
@@ -43,24 +42,22 @@ class Node {
         return action && action['edge'];
     }
     getMaxActionValue(smartOpts, endNode) {
-        var policyVersion = smartOpts['version'];
-        _ensureDefaults(this.policy, policyVersion, endNode, this.edges, smartOpts['initial']);
-        var validActions = this.getValidActions(policyVersion, endNode);
+        var {version, initial} = smartOpts;
+        _ensureDefaults(this.policy, version, endNode, this.edges, initial);
+        var validActions = this.getValidActions(version, endNode);
         var maxAction = max(validActions, (action) => action.value);
         return maxAction['value'];
     }
-    getValidActions(policyVersion, endNode) {
-        var actions = Object.values(this.policy[policyVersion][endNode.id]);
+    getValidActions(version, endNode) {
+        var actions = Object.values(this.policy[version][endNode.id]);
         return actions.filter((action) => this.edges.includes(action.edge));
     }
     getEvaluationCb(smartOpts, endNode, edge) {
-        var policyVersion = smartOpts['version'];
-        var alpha = smartOpts['alpha'];
-        var discount = smartOpts['discount'];
+        var {version, alpha, discount} = smartOpts;
         return (reward, curMaxValue) => {
-            var prevVal = this.policy[policyVersion][endNode.id][edge.id]['value'];
+            var prevVal = this.policy[version][endNode.id][edge.id]['value'];
             var newVal = (1 - discount) * prevVal + alpha * (reward + discount * curMaxValue);
-            this.policy[policyVersion][endNode.id][edge.id]['value'] = newVal;
+            this.policy[version][endNode.id][edge.id]['value'] = newVal;
         };
     }
     draw(ctx) {

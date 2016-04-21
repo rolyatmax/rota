@@ -4,10 +4,8 @@ var Sketch = require('./lib/sketch');
 var Network = require('./network');
 var Packets = require('./packets');
 var Stats = require('./stats');
-
 var Info = require('./lib/info');
-
-const ROW_COLUMN_COUNT = 6;
+var {ROW_COLUMN_COUNT} = require('./settings');
 
 new Info({
     url: 'README.md',

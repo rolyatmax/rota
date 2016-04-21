@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var {uniqueId, difference, sample} = require('underscore');
 var Packet = require('./packet');
 
 const RATE = 150;
@@ -13,7 +13,7 @@ class Packets {
         if (this.smart) {
             this.smartOpts = {
                 ...smartOpts,
-                'version': _.uniqueId('policy')
+                'version': uniqueId('policy')
             };
         }
     }
@@ -34,7 +34,7 @@ class Packets {
         this.inFlight.forEach((packet) => packet.update());
         var completed = this.inFlight.filter((packet) => !!packet.totalTime);
         completed.forEach((packet) => this.stats.logFinish(packet));
-        this.inFlight = _.difference(this.inFlight, completed);
+        this.inFlight = difference(this.inFlight, completed);
     }
     draw(ctx) {
         this.inFlight.forEach((packet) => packet.draw(ctx));
@@ -52,8 +52,8 @@ class Packets {
         while (count--) {
             this.stats.totalCount += 1;
             this.stats.allTimeTotal += 1;
-            var _startNode = startNode || _.sample(Object.values(this.network.nodes));
-            var _endNode = endNode || _.sample(Object.values(this.network.nodes));
+            var _startNode = startNode || sample(Object.values(this.network.nodes));
+            var _endNode = endNode || sample(Object.values(this.network.nodes));
             this.inFlight.push(new Packet(_startNode, _endNode, this.smartOpts));
         }
     }
