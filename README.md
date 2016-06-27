@@ -1,6 +1,8 @@
 Rota
 ====
 
+![rota](/img/img.png?raw=true "rota")
+
 Another reinforcement learning adventure! I wrote this on the heels of my [Maze project](https://tbaldw.in/maze) upon realizing that a similar method could be used to route packets in a network. In a maze, there is one start, one end, and usually just one path. In Rota, there are as many starts and ends as there are nodes in the network and an infinite number of paths.
 
 I figured that one of the interesting properties of the Maze project was that the knowledge and the learning was distributed among the "forks" in the maze. This seemed like an advantage when applied to network routing where a decentralized routing system could hold up in the face of network partitions without losing significant routing knowledge or functionality.
