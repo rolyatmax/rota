@@ -1,4 +1,4 @@
-var Sketch = require('./lib/sketch');
-let helpers = {};
-Sketch.install(helpers);
-module.exports = helpers;
+const Sketch = require('./lib/sketch')
+const helpers = {}
+Sketch.install(helpers)
+module.exports = helpers

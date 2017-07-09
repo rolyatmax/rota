@@ -1,7 +1,7 @@
-var Backbone = require('backbone');
-var _ = require('underscore');
+const Backbone = require('backbone')
+const _ = require('underscore')
 
-var Pubsub = _.clone(Backbone.Events);
-window.Pubsub = Pubsub;
+const Pubsub = { ...Backbone.Events }
+window.Pubsub = Pubsub
 
-modules.exports = Pubsub;
+modules.exports = Pubsub
