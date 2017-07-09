@@ -21,9 +21,13 @@ class Packet {
         this.curNode = startNode;
         this.curEdgeStart = 0;
         this.evaluationCb = null;
+        this.completedRoute = [];
     }
     // TODO: Refactor meeeeeeee
     update() {
+        if (this.completedRoute[this.completedRoute.length - 1] !== this.curNode) {
+            this.completedRoute.push(this.curNode);
+        }
         var now = Date.now();
         if (!this.curEdgeStart) {
             this.curEdgeStart = now;
@@ -69,19 +73,27 @@ class Packet {
         }
     }
     draw(ctx) {
-        var nextNode = this.curEdge ? this.curEdge.getOtherNode(this.curNode) : this.curNode;
-        var [curX, curY] = this.curNode.loc;
-        var [nextX, nextY] = nextNode.loc;
-        var latency = this.curEdge ? this.curEdge.latency : 1;
-        var now = Date.now();
-        var curTime = now - this.curEdgeStart;
-        var x = easing(curX, nextX, latency, curTime);
-        var y = easing(curY, nextY, latency, curTime);
-
+        var points = this.completedRoute.map(node => node.loc);
         ctx.beginPath();
-        ctx.arc(x, y, RADIUS, 0, TWO_PI);
-        ctx.fillStyle = getColor(now - this.startTime);
-        ctx.fill();
+        ctx.moveTo(points[0][0], points[0][1]);
+        points.slice(1).forEach(point => ctx.lineTo(point[0], point[1]));
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // var nextNode = this.curEdge ? this.curEdge.getOtherNode(this.curNode) : this.curNode;
+        // var [curX, curY] = this.curNode.loc;
+        // var [nextX, nextY] = nextNode.loc;
+        // var latency = this.curEdge ? this.curEdge.latency : 1;
+        // var now = Date.now();
+        // var curTime = now - this.curEdgeStart;
+        // var x = easing(curX, nextX, latency, curTime);
+        // var y = easing(curY, nextY, latency, curTime);
+        //
+        // ctx.beginPath();
+        // ctx.arc(x, y, RADIUS, 0, TWO_PI);
+        // ctx.fillStyle = getColor(now - this.startTime);
+        // ctx.fill();
     }
 }
 

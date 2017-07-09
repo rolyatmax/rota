@@ -34,7 +34,7 @@
     "watchify": "3.7.0"
   },
   "dependencies": {
-    "babel-polyfill": "6.7.4",
+    "cat-rom-spline": "1.0.0",
     "underscore": "1.7.0"
   },
   "browserify": {

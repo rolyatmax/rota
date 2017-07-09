@@ -7,6 +7,7 @@ class Packets {
     constructor(network, smartOpts = {}) {
         this.network = network;
         this.inFlight = [];
+        this.completed = [];
         this.rate = RATE;
         this.timeout = null;
         this.smart = !!Object.keys(smartOpts).length;
@@ -34,10 +35,12 @@ class Packets {
         this.inFlight.forEach((packet) => packet.update());
         var completed = this.inFlight.filter((packet) => !!packet.totalTime);
         completed.forEach((packet) => this.stats.logFinish(packet));
+        this.completed = this.completed.concat(completed);
         this.inFlight = difference(this.inFlight, completed);
     }
     draw(ctx) {
-        this.inFlight.forEach((packet) => packet.draw(ctx));
+        // this.inFlight.forEach((packet) => packet.draw(ctx));
+        this.completed.forEach((packet) => packet.draw(ctx));
     }
     addPackets(count = 1, endNodeX, endNodeY, startNodeX, startNodeY) {
         var endNode;
