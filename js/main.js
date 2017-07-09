@@ -1,5 +1,3 @@
-require('babel/polyfill');
-
 var Sketch = require('./lib/sketch');
 var Network = require('./network');
 var Packets = require('./packets');
