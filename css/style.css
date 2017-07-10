@@ -58,16 +58,18 @@ h4 {
 }
 
 .content {
-    position: relative;
+    background: #efefef;
+    height: 195px;
+    padding: 15px 25px;
+    margin: 30px 0 15px;
 }
 
 .stats-container, .controls {
     width: 320px;
-    position: absolute;
     top: 55px;
     right: 0;
-    border-top: 1px solid #333;
     padding-top: 16px;
+    float: left;
 }
 
 .controls {
@@ -106,12 +108,11 @@ button.on {
 
 .instructions {
     width: 320px;
-    position: absolute;
     top: 252px;
     right: 0;
     line-height: 1.5em;
-    border-top: 1px solid #333;
     padding-top: 20px;
+    float: left;
 }
 
 .instructions li {

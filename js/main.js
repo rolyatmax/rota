@@ -18,7 +18,7 @@ const sketch = Sketch.create({
   'fullscreen': false,
   'autopause': false,
   'width': 800,
-  'height': 400,
+  'height': 500,
   'container': document.querySelector('.canvas-container'),
   'globals': false
 })
