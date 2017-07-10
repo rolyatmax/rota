@@ -40,7 +40,7 @@ class Edge {
 
 function getColor (latency) {
   const [minA, maxA] = LATENCY_RANGE
-  const opacity = (((map(-latency, -maxA, -minA, 0.2, 0.9)) * 1000) | 0) / 1000
+  const opacity = (((map(-latency, -maxA, -minA, 0.1, 0.5)) * 1000) | 0) / 1000
   return `rgba(0, 0, 0, ${opacity})`
 }
 

@@ -39,10 +39,16 @@ class Packets {
     this.inFlight = difference(this.inFlight, completed)
   }
   draw (ctx) {
-        // this.inFlight.forEach((packet) => packet.draw(ctx));
-    this.completed.forEach((packet) => packet.draw(ctx))
+    this.inFlight.forEach((packet) => packet.draw(ctx))
+    // only draw the most recent 50?
+    const toDraw = this.completed.slice(this.completed.length - 50)
+    toDraw.forEach((packet) => packet.drawPath(ctx))
+  }
+  clearCompleted () {
+    this.completed = this.completed.slice(-50)
   }
   addPackets (count = 1, endNodeX, endNodeY, startNodeX, startNodeY) {
+    this.clearCompleted()
     let endNode
     let startNode
     if (endNodeX !== undefined && endNodeY !== undefined) {

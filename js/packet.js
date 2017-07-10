@@ -1,11 +1,12 @@
 const { uniqueId } = require('underscore')
-const { LATENCY_RANGE } = require('./settings')
-const { map } = require('./helpers')
+const { REDZONE_TIME, LATENCY_RANGE } = require('./settings')
+const { lerp, map, TWO_PI } = require('./helpers')
+const catRomSpline = require('cat-rom-spline')
 
-// const GREEN = [39, 179, 171]
-// const RED = [167, 29, 36]
-// const OPACITY = 0.7
-// const RADIUS = 6
+const GREEN = [39, 179, 171]
+const RED = [167, 29, 36]
+const OPACITY = 0.7
+const RADIUS = 6
 const SCORE_RANGE = [20, 180]
 
 class Packet {
@@ -34,10 +35,10 @@ class Packet {
       this.curEdge = this.curNode.selectEdge(this.smartOpts, this.smart, this.endNode)
       if (this.smart && this.curEdge) {
         this.evaluationCb = this.curNode.getEvaluationCb(
-                    this.smartOpts,
-                    this.endNode,
-                    this.curEdge
-                )
+          this.smartOpts,
+          this.endNode,
+          this.curEdge
+        )
       }
       return
     }
@@ -55,6 +56,7 @@ class Packet {
         let maxActionValue = this.curNode.getMaxActionValue(this.smartOpts, this.endNode)
         this.evaluationCb(completionReward, maxActionValue)
       }
+      this.completedRoute.push(this.curNode)
       this.totalTime = now - this.startTime
       return
     }
@@ -66,52 +68,62 @@ class Packet {
     this.curEdge = this.curNode.selectEdge(this.smartOpts, this.smart, this.endNode)
     if (this.smart && this.curEdge) {
       this.evaluationCb = this.curNode.getEvaluationCb(
-                this.smartOpts,
-                this.endNode,
-                this.curEdge
-            )
+        this.smartOpts,
+        this.endNode,
+        this.curEdge
+      )
     }
   }
   draw (ctx) {
-    const points = this.completedRoute.map(node => node.loc)
+    const nextNode = this.curEdge ? this.curEdge.getOtherNode(this.curNode) : this.curNode
+    const [curX, curY] = this.curNode.loc
+    const [nextX, nextY] = nextNode.loc
+    const latency = this.curEdge ? this.curEdge.latency : 1
+    const now = Date.now()
+    const curTime = now - this.curEdgeStart
+    const x = easing(curX, nextX, latency, curTime)
+    const y = easing(curY, nextY, latency, curTime)
+
     ctx.beginPath()
-    ctx.moveTo(points[0][0], points[0][1])
-    points.slice(1).forEach(point => ctx.lineTo(point[0], point[1]))
-    ctx.strokeStyle = 'red'
+    ctx.arc(x, y, RADIUS, 0, TWO_PI)
+    ctx.fillStyle = getColor(now - this.startTime)
+    ctx.fill()
+  }
+  drawPath (ctx) {
+    if (!this.splinePoints) {
+      const controls = this.completedRoute.map(node => node.loc)
+      controls.unshift(controls[0].map(v => v + 1))
+      controls.push(controls[controls.length - 1].map(v => v + 1))
+
+      if (controls.length < 4) return
+
+      this.splinePoints = catRomSpline(controls, { samples: controls.length * 10 })
+    }
+
+    ctx.beginPath()
+    ctx.moveTo(this.splinePoints[0][0], this.splinePoints[0][1])
+    this.splinePoints.slice(1).forEach(point => ctx.lineTo(point[0], point[1]))
+    ctx.strokeStyle = `rgba(230, 125, 236, 0.5)`
     ctx.lineWidth = 2
     ctx.stroke()
-
-        // const nextNode = this.curEdge ? this.curEdge.getOtherNode(this.curNode) : this.curNode;
-        // const [curX, curY] = this.curNode.loc;
-        // const [nextX, nextY] = nextNode.loc;
-        // const latency = this.curEdge ? this.curEdge.latency : 1;
-        // const now = Date.now();
-        // const curTime = now - this.curEdgeStart;
-        // const x = easing(curX, nextX, latency, curTime);
-        // const y = easing(curY, nextY, latency, curTime);
-        //
-        // ctx.beginPath();
-        // ctx.arc(x, y, RADIUS, 0, TWO_PI);
-        // ctx.fillStyle = getColor(now - this.startTime);
-        // ctx.fill();
   }
 }
 
-// function getColor (time) {
-//   const perc = time / REDZONE_TIME
-//   const [r, g, b] = [0, 1, 2].map((i) => lerp(GREEN[i], RED[i], perc) | 0)
-//   return `rgba(${r}, ${g}, ${b}, ${OPACITY})`
-// }
-//
-// // In/Out Cubic
-// function easing (start, end, duration, curTime) {
-//   const change = end - start
-//   curTime /= duration / 2
-//   if (curTime < 1) {
-//     return change / 2 * curTime * curTime * curTime + start
-//   }
-//   curTime -= 2
-//   return change / 2 * (curTime * curTime * curTime + 2) + start
-// }
+function getColor (time) {
+  const perc = time / REDZONE_TIME
+  const [r, g, b] = [0, 1, 2].map((i) => lerp(GREEN[i], RED[i], perc) | 0)
+  return `rgba(${r}, ${g}, ${b}, ${OPACITY})`
+}
+
+// In/Out Cubic
+function easing (start, end, duration, curTime) {
+  const change = end - start
+  curTime /= duration / 2
+  if (curTime < 1) {
+    return change / 2 * curTime * curTime * curTime + start
+  }
+  curTime -= 2
+  return change / 2 * (curTime * curTime * curTime + 2) + start
+}
 
 module.exports = Packet

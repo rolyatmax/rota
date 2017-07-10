@@ -75,9 +75,8 @@ window.smart1 = smart1
 packets.forEach((collection, i) => {
   (() => {
     const selector = `.algo-${i}`
-    const coll = collection
     document.querySelector(`${selector} .add`).addEventListener('click', () => {
-      coll.addPackets(getCount(selector))
+      collection.addPackets(getCount(selector))
     })
   })()
 })
