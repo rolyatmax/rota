@@ -47,16 +47,8 @@ class Packets {
   clearCompleted () {
     this.completed = this.completed.slice(-50)
   }
-  addPackets (count = 1, endNodeX, endNodeY, startNodeX, startNodeY) {
+  addPackets (count = 1, endNode, startNode) {
     this.clearCompleted()
-    let endNode
-    let startNode
-    if (endNodeX !== undefined && endNodeY !== undefined) {
-      endNode = this.network.getNode(endNodeX, endNodeY)
-    }
-    if (startNodeX !== undefined && startNodeY !== undefined) {
-      startNode = this.network.getNode(startNodeX, startNodeY)
-    }
 
     while (count--) {
       this.stats.totalCount += 1

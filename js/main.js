@@ -3,7 +3,7 @@ const Network = require('./network')
 const Packets = require('./packets')
 const Stats = require('./stats')
 const Info = require('./lib/info')
-const { ROW_COLUMN_COUNT } = require('./settings')
+const { NETWORK_SIZE, CANVAS_SIZE } = require('./settings')
 
 // eslint-disable-next-line
 new Info({
@@ -12,13 +12,13 @@ new Info({
   container: 'wrapper'
 })
 
-const network = new Network(ROW_COLUMN_COUNT)
+const network = new Network(NETWORK_SIZE)
 
 const sketch = Sketch.create({
   'fullscreen': false,
   'autopause': false,
-  'width': 800,
-  'height': 500,
+  'width': CANVAS_SIZE[0],
+  'height': CANVAS_SIZE[1],
   'container': document.querySelector('.canvas-container'),
   'globals': false
 })
@@ -58,7 +58,7 @@ sketch.touchstart = () => {
   if (sketch.keys['SHIFT']) {
     let node = network.findClosestNodes(x, y, 1)[0]
     if (node) {
-      smart1.addPackets(getCount('.algo-0'), node.x, node.y)
+      smart1.addPackets(getCount('.algo-0'), node)
     }
     return
   }

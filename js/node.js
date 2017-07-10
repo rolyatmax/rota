@@ -1,5 +1,4 @@
 const { sample, where, max } = require('underscore')
-const { SPACING } = require('./settings')
 const { TWO_PI } = require('./helpers')
 
 const RADIUS = 4
@@ -10,7 +9,7 @@ class Node {
     this.x = x
     this.y = y
     this.id = key(x, y)
-    this.loc = [(x + 1) * SPACING, (y + 1) * SPACING]
+    this.loc = [x, y]
     this.edges = []
     this.policy = {}
   }

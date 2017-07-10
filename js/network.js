@@ -1,24 +1,27 @@
-const { range, min } = require('underscore')
+const { sortBy } = require('underscore')
+const { squaredDistance } = require('gl-vec2')
 const Node = require('./node')
 const Edge = require('./edge')
-const { SPACING } = require('./settings')
-const { sqrt, pow, TWO_PI } = require('./helpers')
+const { pow, TWO_PI } = require('./helpers')
+const { CANVAS_SIZE } = require('./settings')
 
+const CONNECTIONS_PER_NODE = 5
 const RADIUS = 12
-const COLOR = 'rgba(96, 57, 193, 0.5)' // purple
+const NODE_HIGHLIGHT_COLOR = 'rgba(96, 57, 193, 0.5)' // purple
 
 class Network {
   constructor (n) {
-    this.width = this.height = n
     this.nodes = {}
     this.edges = {}
-    let x = this.width
-    while (x--) {
-      let y = this.height
-      while (y--) {
-        const node = new Node(x, y)
-        this.nodes[node.id] = node
-      }
+    const maxMag = Math.min(...CANVAS_SIZE) / 2
+    const center = CANVAS_SIZE.map(v => v / 2)
+    while (n--) {
+      const rads = Math.random() * TWO_PI
+      const mag = pow(Math.random(), 0.8) * maxMag
+      const x = Math.cos(rads) * mag + center[0] | 0
+      const y = Math.sin(rads) * mag + center[1] | 0
+      const node = new Node(x, y)
+      this.nodes[node.id] = node
     }
     this.connectAll()
   }
@@ -28,54 +31,32 @@ class Network {
   getEdge (node1, node2) {
     const edge = this.edges[generatePathID(node1, node2)]
     if (!edge) {
-      throw new Error('Edge not found!')
+      console.warn(`Edge not found for ${node1.id} and ${node2.id}`)
     }
     return edge
   }
-  findClosestNodes (touchX, touchY, nodeCount) {
-    const normalized = [touchX, touchY].map((num) => (num / SPACING) - 1)
-    const [minMaxX, minMaxY] = normalized.map((num) => {
-      return [Math.floor, Math.ceil].map((fn) => fn(num))
-    })
-
-    let possibleVectors = [
-      [minMaxX[0], minMaxY[0]],
-      [minMaxX[0], minMaxY[1]],
-      [minMaxX[1], minMaxY[0]],
-      [minMaxX[1], minMaxY[1]]
-    ]
-    possibleVectors = possibleVectors.filter((vector) => vector[0] >= 0 && vector[1] >= 0)
-    const [normalX, normalY] = normalized
-    const closest = range(nodeCount).map(() => {
-      const vector = min(possibleVectors, ([x, y]) => {
-        return sqrt(pow(x - normalX, 2) + pow(y - normalY, 2))
-      })
-      const i = possibleVectors.indexOf(vector)
-      possibleVectors.splice(i, 1)
-      return this.getNode(...vector)
-    })
-
+  findClosestNodes (x, y, nodeCount) {
+    const closest = sortBy(Object.values(this.nodes), (node) => {
+      return squaredDistance(node.loc, [x, y])
+    }).slice(0, nodeCount)
     if (!closest.every(node => node)) {
       return console.log('Missing nodes', closest)
     }
 
     return closest
   }
-  findClosestEdge (touchX, touchY) {
-    const closest = this.findClosestNodes(touchX, touchY, 2)
+  findClosestEdge (x, y) {
+    const closest = this.findClosestNodes(x, y, 2)
     return closest ? this.getEdge(...closest) : null
   }
   connectAll () {
     Object.values(this.nodes).forEach((node) => {
-      let {x, y} = node
-      const edges = node.getNeighbors();
-      [
-        this.getNode(x + 1, y),
-        this.getNode(x - 1, y),
-        this.getNode(x, y + 1),
-        this.getNode(x, y - 1)
-      ].map((neighbor) => {
-        if (!neighbor || edges.indexOf(neighbor) >= 0) {
+      const edges = node.getNeighbors()
+      // if (edges.length === CONNECTIONS_PER_NODE) return
+
+      const closest = this.findClosestNodes(node.loc[0], node.loc[1], CONNECTIONS_PER_NODE + 1)
+      closest.map((neighbor) => {
+        if (neighbor === node || !neighbor || edges.indexOf(neighbor) >= 0) {
           return
         }
         const id = generatePathID(node, neighbor)
@@ -95,7 +76,7 @@ class Network {
         let [x, y] = nodes[0].loc
         ctx.beginPath()
         ctx.arc(x, y, RADIUS, 0, TWO_PI)
-        ctx.fillStyle = COLOR
+        ctx.fillStyle = NODE_HIGHLIGHT_COLOR
         ctx.fill()
       }
     }
