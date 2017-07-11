@@ -3,9 +3,8 @@ const { squaredDistance } = require('gl-vec2')
 const Node = require('./node')
 const Edge = require('./edge')
 const { pow, TWO_PI } = require('./helpers')
-const { CANVAS_SIZE } = require('./settings')
+const { CANVAS_SIZE, CONNECTIONS_PER_NODE } = require('./settings')
 
-const CONNECTIONS_PER_NODE = 5
 const RADIUS = 12
 const NODE_HIGHLIGHT_COLOR = 'rgba(96, 57, 193, 0.5)' // purple
 

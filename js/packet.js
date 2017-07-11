@@ -97,7 +97,7 @@ class Packet {
 
       if (controls.length < 4) return
 
-      this.splinePoints = catRomSpline(controls, { samples: controls.length * 10 })
+      this.splinePoints = catRomSpline(controls, { samples: Math.min(controls.length * 10, 100) })
     }
 
     ctx.beginPath()
