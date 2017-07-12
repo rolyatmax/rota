@@ -1358,8 +1358,8 @@ var Packets = function () {
       this.inFlight.forEach(function (packet) {
         return packet.draw(ctx);
       });
-      // this.drawPathsGL(ctx) // still not performant
-      this.drawPaths(ctx);
+      this.drawPathsGL(ctx); // still not performant
+      // this.drawPaths(ctx)
     }
   }, {
     key: 'drawPaths',

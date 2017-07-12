@@ -4,7 +4,7 @@
  - How do we show directionality of paths?
  - packet TTLs
 
- - adjust render speed
+ - mousedown = startnode and mouseup = endnode (if startnode === endnode, pick random startnodes)
 
  - allow edges to change in latency (based on usage)?
 

@@ -42,8 +42,8 @@ class Packets {
   }
   draw (ctx) {
     this.inFlight.forEach((packet) => packet.draw(ctx))
-    // this.drawPathsGL(ctx) // still not performant
-    this.drawPaths(ctx)
+    this.drawPathsGL(ctx) // still not performant
+    // this.drawPaths(ctx)
   }
   drawPaths (ctx) {
     if (this.completed.length > 50) {
