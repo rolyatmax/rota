@@ -1,5 +1,5 @@
 const SPACING = 50
-const SPEED = 1
+const SPEED = 0.5
 const LATENCY_RANGE = [10, 90].map((num) => num / SPEED)
 const REDZONE_TIME = 40 * (LATENCY_RANGE[0] + LATENCY_RANGE[1]) / 2
 const NETWORK_SIZE = 30

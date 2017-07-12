@@ -89,7 +89,7 @@ class Packet {
     ctx.fillStyle = getColor(now - this.startTime)
     ctx.fill()
   }
-  drawPath (ctx) {
+  getPathRenderPoints (renderPath) {
     if (!this.splinePoints) {
       const controls = this.completedRoute.map(node => node.loc)
       controls.unshift(controls[0].map(v => v + 1))
@@ -97,15 +97,19 @@ class Packet {
 
       if (controls.length < 4) return
 
-      this.splinePoints = catRomSpline(controls, { samples: Math.min(controls.length * 10, 100) })
+      this.splinePoints = catRomSpline(controls, { samples: Math.min(controls.length * 10, 50) }).map((point, i, arr) => {
+        return {
+          position: point,
+          color: [
+            230 / 255,
+            125 / 255,
+            236 / 255,
+            0.9
+          ]
+        }
+      })
     }
-
-    ctx.beginPath()
-    ctx.moveTo(this.splinePoints[0][0], this.splinePoints[0][1])
-    this.splinePoints.slice(1).forEach(point => ctx.lineTo(point[0], point[1]))
-    ctx.strokeStyle = `rgba(230, 125, 236, 0.5)`
-    ctx.lineWidth = 2
-    ctx.stroke()
+    return this.splinePoints
   }
 }
 

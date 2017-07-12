@@ -1,5 +1,7 @@
 const { uniqueId, difference, sample } = require('underscore')
 const Packet = require('./packet')
+const { CANVAS_SIZE } = require('./settings')
+const createPathRenderer = require('./render-path')
 
 const RATE = 150
 
@@ -40,16 +42,52 @@ class Packets {
   }
   draw (ctx) {
     this.inFlight.forEach((packet) => packet.draw(ctx))
-    // only draw the most recent 50?
-    const toDraw = this.completed.slice(this.completed.length - 50)
-    toDraw.forEach((packet) => packet.drawPath(ctx))
+    // this.drawPathsGL(ctx) // still not performant
+    this.drawPaths(ctx)
   }
-  clearCompleted () {
-    this.completed = this.completed.slice(-50)
+  drawPaths (ctx) {
+    if (this.completed.length > 50) {
+      this.completed = this.completed.slice(-50)
+    }
+    const lines = this.completed.map((packet) => packet.getPathRenderPoints().map(p => p.position))
+
+    ctx.beginPath()
+    lines.forEach(points => {
+      ctx.moveTo(points[0][0], points[0][1])
+      points.slice(1).forEach(point => ctx.lineTo(point[0], point[1]))
+    })
+    ctx.strokeStyle = `rgba(230, 125, 236, 0.5)`
+    ctx.lineWidth = 2
+    ctx.stroke()
+  }
+
+  drawPathsGL (ctx) {
+    // only draw the most recent 50?
+    if (!this.pathRenderer) {
+      const canvas = document.createElement('canvas')
+      canvas.style.height = `${CANVAS_SIZE[1]}px`
+      canvas.style.width = `${CANVAS_SIZE[0]}px`
+      canvas.width = CANVAS_SIZE[0]
+      canvas.height = CANVAS_SIZE[1]
+      canvas.style['pointer-events'] = 'none'
+      canvas.style.position = 'absolute'
+      canvas.style.top = canvas.style.left = 0
+      ctx.canvas.parentElement.appendChild(canvas)
+      this.pathRenderer = createPathRenderer(canvas)
+    }
+
+    this.drawPathCache = this.drawPathCache || {}
+    if (this.completed.length > 50) {
+      this.completed = this.completed.slice(-50)
+    }
+    this.completed.map((packet) => {
+      if (!this.drawPathCache[packet.id]) {
+        this.drawPathCache[packet.id] = this.pathRenderer(packet.getPathRenderPoints())
+      }
+      this.drawPathCache[packet.id]()
+    })
   }
   addPackets (count = 1, endNode, startNode) {
-    this.clearCompleted()
-
     while (count--) {
       this.stats.totalCount += 1
       this.stats.allTimeTotal += 1
