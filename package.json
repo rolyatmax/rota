@@ -36,6 +36,7 @@
   "dependencies": {
     "cat-rom-spline": "1.0.0",
     "gl-vec2": "^1.0.0",
+    "regl": "^1.3.0",
     "underscore": "1.7.0"
   },
   "standard": {
