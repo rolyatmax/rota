@@ -11466,7 +11466,7 @@ var Info = require('./lib/info');
 var {ROW_COLUMN_COUNT} = require('./settings');
 
 new Info({
-    url: 'info.md',
+    url: 'README.md',
     keyTrigger: true,
     container: 'wrapper'
 });
